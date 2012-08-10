@@ -5,8 +5,8 @@
 This package contains the access API and descriptions for the `Replay Attack
 Database <http://www.idiap.ch/dataset/replayattack/>`_. The actual raw data for
 the database should be downloaded from the given URL, this package contains
-only the `Bob <http://idiap.ch/software/bob/>`_ accessor methods to use the DB
-directly from python, with our certified protocols.
+only the `Bob <http://www.idiap.ch/software/bob/>`_ accessor methods to use the
+DB directly from python, with our certified protocols.
 
 You would normally not install this package unless you are maintaining it. What
 you would do instead is to tie it in at the package you need to **use** it.
