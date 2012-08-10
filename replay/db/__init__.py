@@ -18,7 +18,7 @@ def version():
   '''Returns the current version number defined in setup.py (DRY)'''
 
   import pkg_resources  # part of setuptools
-  return pkg_resources.require('bob.db.replay')[0].version
+  return pkg_resources.require('bob.db.%s' % dbname())[0].version
 
 def location():
   '''Returns the directory that contains the data'''
