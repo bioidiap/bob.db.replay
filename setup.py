@@ -36,7 +36,7 @@ setup(
     entry_points={
       'console_scripts': [
         # for tests or db creation, enable the following line:
-        #'driver.py = bob.db.script.dbmanage:main',
+        #'replay_manager.py = bob.db.script.dbmanage:main',
         ],
       'bob.db': [
         'replay = replay.db',
