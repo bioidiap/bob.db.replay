@@ -27,7 +27,7 @@ The package is available in two different distribution formats:
 1. You can download it from `PyPI <http://pypi.python.org/pypi>`_, or
 
 2. You can download it in its source form from `its git repository
-   <http://github.com/bioidiap/bob.db.replay.git>`_. When you download the
+   <https://github.com/bioidiap/bob.db.replay>`_. When you download the
    version at the git repository, you will need to run a command to recreate
    the backend SQLite file required for its operation. This means that the
    database raw files must be installed somewhere in this case. With option
