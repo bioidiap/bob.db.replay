@@ -45,3 +45,5 @@ def type():
 # these are required for the dbmanage.py driver
 from .query import Database
 from .commands import add_commands
+
+__all__ = ['Database',]
