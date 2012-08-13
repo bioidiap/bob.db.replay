@@ -38,12 +38,16 @@ setup(
         # for tests or db creation, enable the following line:
         #'replay_manager.py = bob.db.script.dbmanage:main',
         ],
+      
+      # bob database declaration
       'bob.db': [
         'replay = replay.db',
-        ]
+        ],
+
+      # bob unittest declaration
       'bob.test': [
         'replay = replay.test',
-        ]
+        ],
       },
 
 )
