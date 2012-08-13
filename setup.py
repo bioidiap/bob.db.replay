@@ -41,6 +41,9 @@ setup(
       'bob.db': [
         'replay = replay.db',
         ]
+      'bob.test': [
+        'replay = replay.test',
+        ]
       },
 
 )
