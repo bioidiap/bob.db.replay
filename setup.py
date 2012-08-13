@@ -46,7 +46,7 @@ setup(
 
       # bob unittest declaration
       'bob.test': [
-        'replay = replay.test',
+        'replay = replay.test:ReplayDatabaseTest',
         ],
       },
 
