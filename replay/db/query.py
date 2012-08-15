@@ -34,7 +34,7 @@ class Database(object):
       self.session = None
 
     else:
-      self.session = utils.session(type(), INFO.location(), files()[0])
+      self.session = utils.session(INFO.type(), INFO.location(), INFO.files()[0])
 
   def is_valid(self):
     """Returns if a valid session has been opened for reading the database"""
