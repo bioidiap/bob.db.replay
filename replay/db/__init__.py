@@ -11,6 +11,8 @@ Switzerland.
 If you use this database in your publication, please cite the following paper
 on your references:
 
+.. code-block:: sh
+
   @INPROCEEDINGS{Chingovska_BIOSIG-2012,
     author = {Chingovska, Ivana and Anjos, Andr{\'{e}} and Marcel, S{\'{e}}bastien},
     keywords = {biometric, Counter-Measures, Local Binary Patterns, Spoofing Attacks},
@@ -19,6 +21,7 @@ on your references:
     journal = {IEEE BIOSIG 2012},
     year = {2012},
   }
+
 """
 
 from .query import Database
