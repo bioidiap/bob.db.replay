@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
-# Andre Anjos <andre.anjos@idiap.ch>
-# Tue 28 Jun 2011 15:20:09 CEST 
+# Andre Anjos <andre.dos.anjos@gmail.com>
+# Wed 15 Aug 11:26:11 2012 
 
-"""Commands this database can respond to.
+"""Bob Database Driver entry-point for the Replay Attack Database
 """
 
 import os
 import sys
+from bob.db.driver import Interface as BaseInterface
 
 def reverse(args):
   """Returns a list of file database identifiers given the path stems"""
@@ -73,53 +74,45 @@ def path_command(subparsers):
 
   parser.set_defaults(func=path) #action
 
-def add_commands(parser):
-  """Adds my subset of options and arguments to the top-level parser. For
-  details on syntax, please consult:
+class Interface(BaseInterface):
 
-  http://docs.python.org/dev/library/argparse.html
+  def name(self):
+    return 'replay'
 
-  The strategy assumed here is that each command will have its own set of
-  options that are relevant to that command. So, we just scan such commands and
-  attach the options from those.
-  """
+  def version(self):
+    import pkg_resources  # part of setuptools
+    return pkg_resources.require('bob.db.%s' % self.name())[0].version
 
-  from . import dbname, location, version, type, files
-  from bob.db.utils import standard_commands
-  from . import __doc__ as dbdoc
-  from argparse import RawDescriptionHelpFormatter
+  def location(self):
+    return os.path.dirname(os.path.realpath(__file__))
 
-  # creates a top-level parser for this database
-  myname = dbname()
-  top_level = parser.add_parser(myname,
-      formatter_class=RawDescriptionHelpFormatter,
-      help="Photo/Video Replay attack database", description=dbdoc)
-  top_level.set_defaults(dbname=myname)
-  top_level.set_defaults(location=location())
-  top_level.set_defaults(version=version())
-  top_level.set_defaults(type=type())
-  top_level.set_defaults(files=files())
+  def files(self):
+    return ('db.sql3',)
 
-  # declare it has subparsers for each of the supported commands
-  subparsers = top_level.add_subparsers(title="subcommands")
+  def type(self):
+    return 'sqlite'
 
-  # attach standard commands
-  standard_commands(subparsers, type(), files())
+  def add_commands(self, parser):
 
-  # get the "create" action from a submodule
-  from .create import add_command as create_command
-  create_command(subparsers)
+    from . import __doc__ as docs
+    
+    subparsers = self.setup_parser(parser, 
+        "Photo/Video Replay attack database", docs)
 
-  # get the "dumplist" action from a submodule
-  from .dumplist import add_command as dumplist_command
-  dumplist_command(subparsers)
+    # get the "create" action from a submodule
+    from .create import add_command as create_command
+    create_command(subparsers)
 
-  # get the "checkfiles" action from a submodule
-  from .checkfiles import add_command as checkfiles_command
-  checkfiles_command(subparsers)
+    # get the "dumplist" action from a submodule
+    from .dumplist import add_command as dumplist_command
+    dumplist_command(subparsers)
 
-  # adds the "reverse" command
-  reverse_command(subparsers)
+    # get the "checkfiles" action from a submodule
+    from .checkfiles import add_command as checkfiles_command
+    checkfiles_command(subparsers)
 
-  # adds the "path" command
-  path_command(subparsers)
+    # adds the "reverse" command
+    reverse_command(subparsers)
+
+    # adds the "path" command
+    path_command(subparsers)

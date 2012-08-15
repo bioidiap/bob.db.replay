@@ -11,9 +11,11 @@ import os
 import logging
 from bob.db import utils
 from .models import *
-from . import dbname, type, location, files
+from .driver import Interface
 
-SQLITE_FILE = os.path.join(location(), files()[0])
+INFO = Interface()
+
+SQLITE_FILE = os.path.join(INFO.location(), INFO.files()[0])
 
 class Database(object):
   """The dataset class opens and maintains a connection opened to the Database.
@@ -32,7 +34,7 @@ class Database(object):
       self.session = None
 
     else:
-      self.session = utils.session(type(), location(), files()[0])
+      self.session = utils.session(type(), INFO.location(), files()[0])
 
   def is_valid(self):
     """Returns if a valid session has been opened for reading the database"""
@@ -87,7 +89,7 @@ class Database(object):
     """
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     def check_validity(l, obj, valid, default):
       """Checks validity of user input data against a set of valid values"""
@@ -157,7 +159,7 @@ class Database(object):
     """Returns the names of all registered protocols"""
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     return tuple([k.name for k in self.session.query(Protocol)])
 
@@ -165,7 +167,7 @@ class Database(object):
     """Tells if a certain protocol is available"""
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     return self.session.query(Protocol).filter(Protocol.name==name).count() != 0
 
@@ -174,7 +176,7 @@ class Database(object):
     an error if that does not exist."""
     
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     return self.session.query(Protocol).filter(Protocol.name==name).one()
 
@@ -224,7 +226,7 @@ class Database(object):
     """
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     fobj = self.session.query(File).filter(File.id.in_(ids))
     retval = []
@@ -246,7 +248,7 @@ class Database(object):
     """
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     fobj = self.session.query(File).filter(File.path.in_(paths))
     retval = []
@@ -278,7 +280,7 @@ class Database(object):
     """
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (dbname(), SQLITE_FILE)
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
 
     from bob.io import save
 
