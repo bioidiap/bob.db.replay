@@ -41,7 +41,7 @@ setup(
       
       # bob database declaration
       'bob.db': [
-        'replay = replay.db',
+        'replay = replay.db.driver:Interface',
         ],
 
       # bob unittest declaration
