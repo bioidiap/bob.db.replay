@@ -24,6 +24,9 @@ setup(
     # it is packaged correctly for PyPI uploads or for any other package
     # management system such as Ubuntu's.
     package_data = {
+      '': [
+        'README.rst',
+        ]
       'replay': [
         'db/db.sql3',
         ],
