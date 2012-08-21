@@ -26,7 +26,7 @@ setup(
     package_data = {
       '': [
         'README.rst',
-        ]
+        ],
       'replay': [
         'db/db.sql3',
         ],
