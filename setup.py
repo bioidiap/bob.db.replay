@@ -13,24 +13,14 @@ setup(
     version='master',
     description='Replay Attack Database Access API for Bob',
     url='http://github.com/bioidiap/bob.db.replay',
-    license='LICENSE.txt',
+    license='GPLv3',
     author_email='Andre Anjos <andre.anjos@idiap.ch>',
     #long_description=open('doc/howto.rst').read(),
 
     # This line is required for any distutils based packaging.
     packages=find_packages(),
-
-    # Always include your .sql3 file with the package data. This will make sure
-    # it is packaged correctly for PyPI uploads or for any other package
-    # management system such as Ubuntu's.
-    package_data = {
-      '': [
-        'README.rst',
-        ],
-      'replay': [
-        'db/db.sql3',
-        ],
-      },
+    include_package_data=True,
+    zip_safe=False,
 
     install_requires=[
         "bob == master",  # base signal proc./machine learning library
