@@ -25,4 +25,5 @@ on your references:
 """
 
 from .query import Database
-__all__ = dir()
+
+__all__ = ['Database']

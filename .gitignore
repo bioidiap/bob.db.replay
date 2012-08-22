@@ -11,3 +11,4 @@ src
 develop-eggs
 built-docs
 dist
+sphinx

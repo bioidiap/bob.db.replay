@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 # parameters that define our package.
 setup(
 
-    name='bob.db.replay',
+    name='xbob.db.replay',
     version='master',
     description='Replay Attack Database Access API for Bob',
     url='http://github.com/bioidiap/bob.db.replay',
@@ -24,23 +24,24 @@ setup(
     zip_safe=False,
 
     install_requires=[
-        "bob",  # base signal proc./machine learning library
+      'setuptools',
+      'bob',  # base signal proc./machine learning library
     ],
 
-    entry_points={
-      'console_scripts': [
-        # for tests or db creation, enable the following line:
-        #'replay_manager.py = bob.db.script.dbmanage:main',
-        ],
-      
+    namespace_packages = [
+      'xbob',
+      'xbob.db',
+      ],
+
+    entry_points = {
       # bob database declaration
       'bob.db': [
-        'replay = replay.db.driver:Interface',
+        'replay = xbob.db.replay.driver:Interface',
         ],
 
       # bob unittest declaration
       'bob.test': [
-        'replay = replay.test:ReplayDatabaseTest',
+        'replay = xbob.db.replay.test:ReplayDatabaseTest',
         ],
       },
 

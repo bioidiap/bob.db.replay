@@ -6,6 +6,6 @@
  Replay Attack Database
 ========================
 
-.. automodule:: replay.db
+.. automodule:: xbob.db.replay
 
-.. autoclass:: replay.db.Database
+.. autoclass:: xbob.db.replay.Database
