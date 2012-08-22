@@ -105,41 +105,25 @@ class ReplayDatabaseTest(unittest.TestCase):
     for k,v in f.items():
       self.assertTrue(v.find('enroll') != -1)
 
-  def test09_manage_get(self):
-
-    from bob.db.script.dbmanage import main
-
-    self.assertEqual(main('replay get --dry-run'.split()), 0)
-    self.assertEqual(main('replay get --version=bla --dry-run'.split()), 0)
-    self.assertEqual(main('replay get --version=1.3.4 --verbose --dry-run'.split()), 0)
-
-  def test10_manage_put(self):
-
-    from bob.db.script.dbmanage import main
-
-    self.assertEqual(main('replay put --dry-run tmp'.split()), 0)
-    self.assertEqual(main('replay put --version=bla --dry-run tmp'.split()), 0)
-    self.assertEqual(main('replay put --version=1.3.4 --verbose --dry-run tmp'.split()), 0)
-
-  def test11_manage_location(self):
+  def test09_manage_location(self):
 
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay location'.split()), 0)
 
-  def test12_manage_dumplist_1(self):
+  def test10_manage_dumplist_1(self):
 
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --self-test'.split()), 0)
 
-  def test13_manage_dumplist_2(self):
+  def test11_manage_dumplist_2(self):
     
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --class=attack --group=devel --support=hand --protocol=highdef --self-test'.split()), 0)
 
-  def test14_manage_checkfiles(self):
+  def test12_manage_checkfiles(self):
 
     from bob.db.script.dbmanage import main
 
