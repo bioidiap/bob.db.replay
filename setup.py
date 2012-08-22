@@ -24,7 +24,7 @@ setup(
     zip_safe=False,
 
     install_requires=[
-        "bob == master",  # base signal proc./machine learning library
+        "bob",  # base signal proc./machine learning library
     ],
 
     entry_points={
