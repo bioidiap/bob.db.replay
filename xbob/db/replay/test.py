@@ -22,7 +22,7 @@
 
 import os, sys
 import unittest
-from . import db as replay_db
+from .query import Database
 
 class ReplayDatabaseTest(unittest.TestCase):
   """Performs various tests on the replay attack database."""
@@ -30,7 +30,7 @@ class ReplayDatabaseTest(unittest.TestCase):
   def test01_queryRealAccesses(self):
 
 
-    db = replay_db.Database()
+    db = Database()
     f = db.files(cls='real')
     self.assertEqual(len(set(f.values())), 200) #200 unique auth sessions
     for k,v in f.items():
@@ -53,7 +53,7 @@ class ReplayDatabaseTest(unittest.TestCase):
 
   def queryAttackType(self, protocol, N):
 
-    db = replay_db.Database()
+    db = Database()
     f = db.files(cls='attack', protocol=protocol)
 
     self.assertEqual(len(set(f.values())), N) 
@@ -99,7 +99,7 @@ class ReplayDatabaseTest(unittest.TestCase):
   
   def test08_queryEnrollments(self):
 
-    db = replay_db.Database()
+    db = Database()
     f = db.files(cls='enroll')
     self.assertEqual(len(set(f.values())), 100) #50 clients, 2 conditions
     for k,v in f.items():
