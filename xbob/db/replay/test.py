@@ -29,7 +29,6 @@ class ReplayDatabaseTest(unittest.TestCase):
 
   def test01_queryRealAccesses(self):
 
-
     db = Database()
     f = db.files(cls='real')
     self.assertEqual(len(set(f.values())), 200) #200 unique auth sessions
