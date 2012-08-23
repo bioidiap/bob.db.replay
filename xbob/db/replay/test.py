@@ -105,11 +105,11 @@ class ReplayDatabaseTest(unittest.TestCase):
     for k,v in f.items():
       self.assertTrue(v.find('enroll') != -1)
 
-  def test09_manage_location(self):
+  def test09_manage_files(self):
 
     from bob.db.script.dbmanage import main
 
-    self.assertEqual(main('replay location'.split()), 0)
+    self.assertEqual(main('replay files'.split()), 0)
 
   def test10_manage_dumplist_1(self):
 

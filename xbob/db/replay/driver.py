@@ -83,11 +83,11 @@ class Interface(BaseInterface):
     import pkg_resources  # part of setuptools
     return pkg_resources.require('xbob.db.%s' % self.name())[0].version
 
-  def location(self):
-    return os.path.dirname(os.path.realpath(__file__))
-
   def files(self):
-    return ('db.sql3',)
+
+    from pkg_resources import resource_filename
+    raw_files = ('db.sql3',)
+    return [resource_filename(__name__, k) for k in raw_files]
 
   def type(self):
     return 'sqlite'

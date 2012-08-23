@@ -15,7 +15,7 @@ from .driver import Interface
 
 INFO = Interface()
 
-SQLITE_FILE = os.path.join(INFO.location(), INFO.files()[0])
+SQLITE_FILE = INFO.files()[0]
 
 class Database(object):
   """The dataset class opens and maintains a connection opened to the Database.
