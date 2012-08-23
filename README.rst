@@ -51,7 +51,7 @@ script)::
     ],
 
 Proceed normally with your ``boostrap/buildout`` steps and you should be all
-set. That means you can now import the ``replay`` namespace into your scripts.
+set. That means you can now import the ``xbob.db.replay`` namespace into your scripts.
 
 Modify your buildout.cfg and download from git
 ==============================================
