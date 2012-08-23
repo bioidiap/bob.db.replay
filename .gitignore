@@ -12,3 +12,4 @@ develop-eggs
 built-docs
 dist
 sphinx
+db.sql3
