@@ -47,7 +47,7 @@ script)::
 
     install_requires=[
       ...
-      "xbob.db.replay >= 1.1",
+      "xbob.db.replay",
     ],
 
 Proceed normally with your ``boostrap/buildout`` steps and you should be all
