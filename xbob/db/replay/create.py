@@ -158,8 +158,7 @@ def create_tables(args):
   from bob.db.utils import connection_string
 
   from sqlalchemy import create_engine
-  engine = create_engine(connection_string(args.type, args.location,
-    args.files[0]), echo=args.verbose)
+  engine = create_engine(connection_string(args.type, args.files[0]), echo=args.verbose)
   Client.metadata.create_all(engine)
   RealAccess.metadata.create_all(engine)
   Attack.metadata.create_all(engine)
@@ -173,7 +172,7 @@ def create(args):
 
   from bob.db.utils import session
 
-  dbfile = os.path.join(args.location, args.files[0])
+  dbfile = args.files[0]
 
   args.verbose = 0 if args.verbose is None else sum(args.verbose)
 
@@ -187,7 +186,7 @@ def create(args):
 
   # the real work...
   create_tables(args)
-  s = session(args.type, args.location, args.files[0], echo=(args.verbose >= 2))
+  s = session(args.type, args.files[0], echo=(args.verbose >= 2))
   add_clients(s, args.protodir, args.verbose)
   add_real_lists(s, args.protodir, args.verbose)
   add_attack_lists(s, args.protodir, args.verbose)
