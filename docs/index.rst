@@ -7,5 +7,3 @@
 ========================
 
 .. automodule:: xbob.db.replay
-
-.. autoclass:: xbob.db.replay.Database
