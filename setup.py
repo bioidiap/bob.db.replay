@@ -12,7 +12,7 @@ setup(
     name='xbob.db.replay',
     version='1.0.0a1',
     description='Replay Attack Database Access API for Bob',
-    url='http://github.com/bioidiap/bob.db.replay',
+    url='http://github.com/bioidiap/xbob.db.replay',
     license='GPLv3',
     author='Andre Anjos',
     author_email='andre.anjos@idiap.ch',
