@@ -155,11 +155,9 @@ def define_protocols(session, protodir, verbose):
 def create_tables(args):
   """Creates all necessary tables (only to be used at the first time)"""
 
-  from bob.db.utils import connection_string
+  from bob.db.utils import create_engine_try_nolock
 
-  from sqlalchemy import create_engine
-  engine = create_engine(connection_string(args.type, args.files[0]), 
-      echo=(args.verbose >= 2))
+  engine = create_engine_try_nolock(args.type, args.files[0], echo=(args.verbose >= 2))
   Client.metadata.create_all(engine)
   RealAccess.metadata.create_all(engine)
   Attack.metadata.create_all(engine)
@@ -171,7 +169,7 @@ def create_tables(args):
 def create(args):
   """Creates or re-creates this database"""
 
-  from bob.db.utils import session
+  from bob.db.utils import session_try_nolock
 
   dbfile = args.files[0]
 
@@ -185,7 +183,7 @@ def create(args):
 
   # the real work...
   create_tables(args)
-  s = session(args.type, args.files[0], echo=(args.verbose >= 2))
+  s = session_try_nolock(args.type, args.files[0], echo=(args.verbose >= 2))
   add_clients(s, args.protodir, args.verbose)
   add_real_lists(s, args.protodir, args.verbose)
   add_attack_lists(s, args.protodir, args.verbose)
