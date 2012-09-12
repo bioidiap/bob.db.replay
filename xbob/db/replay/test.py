@@ -127,3 +127,12 @@ class ReplayDatabaseTest(unittest.TestCase):
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay checkfiles --self-test'.split()), 0)
+
+  def test13_queryfacefile(self):
+
+    db = Database()
+    self.assertEqual(db.faces(('foo',), directory = 'dir')[0], 'dir/foo.faces',)
+
+  def test14_queryfacefile_key(self):
+    db = Database()
+    self.assertEqual(db.faces_ids(ids=(1,), directory='dir'), db.paths(ids=(1,), prefix='dir', suffix='.faces'))
