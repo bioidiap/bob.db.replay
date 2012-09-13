@@ -131,8 +131,8 @@ class ReplayDatabaseTest(unittest.TestCase):
   def test13_queryfacefile(self):
 
     db = Database()
-    self.assertEqual(db.faces(('foo',), directory = 'dir')[0], 'dir/foo.faces',)
+    self.assertEqual(db.facefiles(('foo',), directory = 'dir')[0], 'dir/foo.face',)
 
   def test14_queryfacefile_key(self):
     db = Database()
-    self.assertEqual(db.faces_ids(ids=(1,), directory='dir'), db.paths(ids=(1,), prefix='dir', suffix='.faces'))
+    self.assertEqual(db.facefiles_ids(ids=(1,), directory='dir'), db.paths(ids=(1,), prefix='dir', suffix='.face'))

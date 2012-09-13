@@ -156,7 +156,7 @@ class Database(object):
     return retval
 
 
-  def faces(self, filenames, directory=None):
+  def facefiles(self, filenames, directory=None):
     """Queries the files containing the face locations for the frames in the videos specified by the input parameter filenames
 
     Keyword parameters:
@@ -178,11 +178,42 @@ class Database(object):
       
       There is one row for each frame, and not all the frames contain detected faces
     """
-    if directory: return [os.path.join(directory, stem + '.faces') for stem in filenames]
-    return [stem + '.faces' for stem in filenames]
+    if directory: return [os.path.join(directory, stem + '.face') for stem in filenames]
+    return [stem + '.face' for stem in filenames]
 
-    
-  def faces_ids(self, ids, directory=None):
+  def facebbx(self, filenames, directory=None):
+    """Reads the files containing the face locations for the frames in the videos specified by the input parameter filenames
+
+    Keyword parameters:
+ 
+    filenames
+      The filenames of the videos. This object should be a python iterable (such as a tuple or list).
+
+    Returns: 
+      A list of numpy.ndarrays containing information about the locatied faces in the videos. Each element in the list corresponds to one input filename. Each row of the numpy.ndarray corresponds for one frame. The five columns of the numpy.ndarray denote:
+
+      * Frame number
+      * Bounding box top-left X coordinate 
+      * Bounding box top-left Y coordinate 
+      * Bounding box width 
+      * Bounding box height
+      
+      Note that not all the frames contain detected faces.
+    """
+    facefiles = self.facefiles(filenames, directory)
+    facesbbx = []
+    for facef in facefiles:
+      lines = open(facef, "r").readlines()
+      bbx = numpy.ndarray((len(lines), 5), dtype='int')
+      lc = 0
+      for l in lines:
+        words = l.split()
+        bbx[lc] = [int(w) for w in words]
+        lc+=1
+      facesbbx.append(bbx)
+    return facesbbx
+
+  def facefiles_ids(self, ids, directory=None):
     """Queries the files containing the face locations for the frames in the videos specified by the input parameter ids
 
     Keyword parameters:
@@ -198,9 +229,40 @@ class Database(object):
     """
     if not directory:
       directory = ''
-    facespaths = self.paths(ids, prefix=directory, suffix='.faces')
+    facespaths = self.paths(ids, prefix=directory, suffix='.face')
     return facespaths
 
+  def facebbx_ids(self, ids, directory=None):
+    """Reads the files containing the face locations for the frames in the videos specified by the input parameter filenames
+
+    Keyword parameters:
+ 
+    filenames
+      The filenames of the videos. This object should be a python iterable (such as a tuple or list).
+
+    Returns: 
+      A list of numpy.ndarrays containing information about the locatied faces in the videos. Each element in the list corresponds to one input filename. Each row of the numpy.ndarray corresponds for one frame. The five columns of the numpy.ndarray denote:
+
+      * Frame number
+      * Bounding box top-left X coordinate 
+      * Bounding box top-left Y coordinate 
+      * Bounding box width 
+      * Bounding box height
+      
+      Note that not all the frames contain detected faces.
+    """
+    facefiles = self.facefiles_ids(ids, directory)
+    facesbbx = []
+    for facef in facefiles:
+      lines = open(facef, "r").readlines()
+      bbx = numpy.ndarray((len(lines), 5), dtype='int')
+      lc = 0
+      for l in lines:
+        words = l.split()
+        bbx[lc] = [int(w) for w in words]
+        lc+=1
+      facesbbx.append(bbx)
+    return facesbbx
 
   def protocols(self):
     """Returns the names of all registered protocols"""
