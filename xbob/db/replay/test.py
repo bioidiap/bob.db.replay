@@ -122,17 +122,23 @@ class ReplayDatabaseTest(unittest.TestCase):
 
     self.assertEqual(main('replay dumplist --class=attack --group=devel --support=hand --protocol=highdef --self-test'.split()), 0)
 
-  def test12_manage_checkfiles(self):
+  def test12_manage_dumplist_client(self):
+    
+    from bob.db.script.dbmanage import main
+
+    self.assertEqual(main('replay dumplist --client=117 --self-test'.split()), 0)
+
+  def test13_manage_checkfiles(self):
 
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay checkfiles --self-test'.split()), 0)
 
-  def test13_queryfacefile(self):
+  def test14_queryfacefile(self):
 
     db = Database()
     self.assertEqual(db.facefiles(('foo',), directory = 'dir')[0], 'dir/foo.face',)
 
-  def test14_queryfacefile_key(self):
+  def test15_queryfacefile_key(self):
     db = Database()
     self.assertEqual(db.facefiles_ids(ids=(1,), directory='dir'), db.paths(ids=(1,), prefix='dir', suffix='.face'))

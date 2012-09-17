@@ -26,6 +26,7 @@ def dumplist(args):
       groups=args.group, 
       cls=args.cls,
       light=args.light,
+      clients=args.client,
       )
 
   output = sys.stdout
@@ -51,8 +52,10 @@ def add_command(subparsers):
 
   if not db.is_valid():
     protocols = ('waiting','for','database','creation')
+    clients = tuple()
   else:
     protocols = db.protocols()
+    clients = db.clients()
 
   parser.add_argument('-d', '--directory', dest="directory", default='', help="if given, this path will be prepended to every entry returned (defaults to '%(default)s')")
   parser.add_argument('-e', '--extension', dest="extension", default='', help="if given, this extension will be appended to every entry returned (defaults to '%(default)s')")
@@ -61,6 +64,7 @@ def add_command(subparsers):
   parser.add_argument('-s', '--support', dest="support", default='', help="if given, this value will limit the output files to those using this type of attack support. (defaults to '%(default)s')", choices=db.attack_supports())
   parser.add_argument('-x', '--protocol', dest="protocol", default='', help="if given, this value will limit the output files to those for a given protocol. (defaults to '%(default)s')", choices=protocols)
   parser.add_argument('-l', '--light', dest="light", default='', help="if given, this value will limit the output files to those shot under a given lighting. (defaults to '%(default)s')", choices=db.lights())
+  parser.add_argument('-C', '--client', dest="client", default=None, type=int, help="if given, limits the dump to a particular client (defaults to '%(default)s')", choices=clients)
   parser.add_argument('--self-test', dest="selftest", default=False,
       action='store_true', help=SUPPRESS)
 
