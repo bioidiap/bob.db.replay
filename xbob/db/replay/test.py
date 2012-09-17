@@ -104,6 +104,20 @@ class ReplayDatabaseTest(unittest.TestCase):
     for k,v in f.items():
       self.assertTrue(v.find('enroll') != -1)
 
+  def test08a_queryClients(self):
+
+    db = Database()
+    f = db.clients()
+    self.assertEqual(len(f), 50) #50 clients
+    self.assertTrue(db.has_client(3))
+    self.assertFalse(db.has_client(0))
+    self.assertTrue(db.has_client(21))
+    self.assertFalse(db.has_client(32))
+    self.assertFalse(db.has_client(100))
+    self.assertTrue(db.has_client(101))
+    self.assertTrue(db.has_client(119))
+    self.assertFalse(db.has_client(120))
+
   def test09_manage_files(self):
 
     from bob.db.script.dbmanage import main
