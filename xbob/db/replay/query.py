@@ -365,6 +365,49 @@ class Database(object):
     """Returns attack sample types available in the database"""
     return Attack.sample_type_choices
 
+  def info(self, ids):
+    """Returns a dictionary of information for each input id
+    
+    Keyword Parameters:
+
+    id
+      The ids of the object in the database table "file". This object should be
+      a python iterable (such as a tuple or list).
+
+    Returns a list (that may be empty) of dictionaries containing each of the
+    identities properties.
+    """
+
+    if not self.is_valid():
+      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
+
+    fobj = self.session.query(File).filter(File.id.in_(ids))
+    retval = []
+    for f in fobj:
+      insert = {}
+      insert['client'] = f.client.id
+      insert['group'] = f.client.set
+      insert['path'] = f.path
+      insert['light'] = f.light
+
+      if f.attack:
+        insert['real'] = False
+        o = f.attack[0]
+        insert['attack_support'] = o.attack_support
+        insert['attack_device'] = o.attack_device
+        insert['sample_type'] = o.sample_type
+        insert['sample_device'] = o.sample_device
+
+      else: #it's a real access
+        insert['real'] = True
+        o = f.realaccess[0]
+        insert['purpose'] = o.purpose
+        insert['take'] = o.take
+
+      retval.append(insert)
+
+    return retval
+
   def paths(self, ids, prefix='', suffix=''):
     """Returns a full file paths considering particular file ids, a given
     directory and an extension
