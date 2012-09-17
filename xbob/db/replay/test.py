@@ -156,3 +156,34 @@ class ReplayDatabaseTest(unittest.TestCase):
   def test15_queryfacefile_key(self):
     db = Database()
     self.assertEqual(db.facefiles_ids(ids=(1,), directory='dir'), db.paths(ids=(1,), prefix='dir', suffix='.face'))
+
+  def test16_queryInfo(self):
+
+    db = Database()
+    res = db.info((1,))
+    self.assertEqual(len(res), 1)
+
+    res = db.info((1,2))
+    self.assertEqual(len(res), 2)
+
+    res = db.info(db.reverse(('devel/attack/fixed/attack_highdef_client030_session01_highdef_photo_adverse',)))
+    self.assertEqual(len(res), 1)
+    res = res[0]
+    self.assertFalse(res['real'])
+    self.assertEqual(res['sample_device'], u'highdef')
+    self.assertEqual(res['group'], u'devel')
+    self.assertEqual(res['light'], u'adverse')
+    self.assertEqual(res['client'], 30)
+    self.assertEqual(res['attack_support'], u'fixed')
+    self.assertEqual(res['sample_type'], u'photo')
+    self.assertEqual(res['attack_device'], u'highdef')
+
+    res = db.info(db.reverse(('train/real/client001_session01_webcam_authenticate_adverse_1',)))
+    self.assertEqual(len(res), 1)
+    res = res[0]
+    self.assertTrue(res['real'])
+    self.assertEqual(res['group'], u'train')
+    self.assertEqual(res['light'], u'adverse')
+    self.assertEqual(res['client'], 1)
+    self.assertEqual(res['take'], 1)
+    self.assertEqual(res['purpose'], u'authenticate')
