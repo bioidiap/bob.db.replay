@@ -91,6 +91,19 @@ class File(Base):
 
     return os.path.join(directory, self.path + extension)
 
+  def videofile(self, directory=None):
+    """Returns the path to the database video file for this object
+
+    Keyword parameters:
+
+    directory
+      An optional directory name that will be prefixed to the returned result.
+
+    Returns a string containing the video file path.
+    """
+
+    return self.make_path(directory, '.mov')
+
   def facefile(self, directory=None):
     """Returns the path to the companion face bounding-box file
 
