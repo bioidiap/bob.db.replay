@@ -14,7 +14,7 @@ on your references:
 .. code-block:: sh
 
   @INPROCEEDINGS{Chingovska_BIOSIG-2012,
-    author = {Chingovska, Ivana and Anjos, Andr{\'{e}} and Marcel, S{\'{e}}bastien},
+    author = {Chingovska, Ivana and Anjos, Andr\\'e and Marcel, S\\'ebastien},
     keywords = {biometric, Counter-Measures, Local Binary Patterns, Spoofing Attacks},
     month = september,
     title = {On the Effectiveness of Local Binary Patterns in Face Anti-spoofing},
