@@ -25,5 +25,6 @@ on your references:
 """
 
 from .query import Database
+from .models import Client, File, Protocol, RealAccess, Attack
 
-__all__ = ['Database']
+__all__ = dir()

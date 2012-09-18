@@ -18,9 +18,7 @@ def checkfiles(args):
   from .query import Database
   db = Database()
 
-  r = db.files(
-      directory=args.directory,
-      extension=args.extension,
+  r = db.objects(
       protocol=args.protocol, 
       support=args.support, 
       groups=args.group,
@@ -30,11 +28,13 @@ def checkfiles(args):
       )
 
   # go through all files, check if they are available on the filesystem
-  good = {}
-  bad = {}
-  for id, f in r.items():
-    if os.path.exists(f): good[id] = f
-    else: bad[id] = f
+  good = []
+  bad = []
+  for f in r:
+    if os.path.exists(f.make_path(args.directory, args.extension)):
+      good.append(f)
+    else: 
+      bad.append(f)
 
   # report
   output = sys.stdout
@@ -43,8 +43,8 @@ def checkfiles(args):
     output = null()
 
   if bad:
-    for id, f in bad.items():
-      output.write('Cannot find file "%s"\n' % (f,))
+    for f in bad:
+      output.write('Cannot find file "%s"\n' % (f.make_path(args.directory, args.extension),))
     output.write('%d files (out of %d) were not found at "%s"\n' % \
         (len(bad), len(r), args.directory))
 
@@ -65,8 +65,8 @@ def add_command(subparsers):
     protocols = ('waiting','for','database','creation')
     clients = tuple()
   else:
-    protocols = db.protocols()
-    clients = db.clients()
+    protocols = [k.name for k in db.protos()]
+    clients = [k.id for k in db.clients()]
 
   parser.add_argument('-d', '--directory', dest="directory", default='', help="if given, this path will be prepended to every entry checked (defaults to '%(default)s')")
   parser.add_argument('-e', '--extension', dest="extension", default='', help="if given, this extension will be appended to every entry checked (defaults to '%(default)s')")

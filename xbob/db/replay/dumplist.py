@@ -18,9 +18,7 @@ def dumplist(args):
   from .query import Database
   db = Database()
 
-  r = db.files(
-      directory=args.directory, 
-      extension=args.extension,
+  r = db.objects(
       protocol=args.protocol, 
       support=args.support, 
       groups=args.group, 
@@ -34,8 +32,8 @@ def dumplist(args):
     from bob.db.utils import null
     output = null()
 
-  for id, f in r.items():
-    output.write('%s\n' % (f,))
+  for f in r:
+    output.write('%s\n' % (f.make_path(args.directory, args.extension),))
 
   return 0
 
@@ -54,8 +52,8 @@ def add_command(subparsers):
     protocols = ('waiting','for','database','creation')
     clients = tuple()
   else:
-    protocols = db.protocols()
-    clients = db.clients()
+    protocols = [k.name for k in db.protos()]
+    clients = [k.id for k in db.clients()]
 
   parser.add_argument('-d', '--directory', dest="directory", default='', help="if given, this path will be prepended to every entry returned (defaults to '%(default)s')")
   parser.add_argument('-e', '--extension', dest="extension", default='', help="if given, this extension will be appended to every entry returned (defaults to '%(default)s')")
