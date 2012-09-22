@@ -89,7 +89,7 @@ class File(Base):
     if not directory: directory = ''
     if not extension: extension = ''
 
-    return os.path.join(directory, self.path + extension)
+    return str(os.path.join(directory, self.path + extension))
 
   def videofile(self, directory=None):
     """Returns the path to the database video file for this object
@@ -182,7 +182,7 @@ class File(Base):
     """
 
     path = self.make_path(directory, extension)
-    bob.utils.makedirs_safe(os.path.dirname(path))
+    bob.db.utils.makedirs_safe(os.path.dirname(path))
     bob.io.save(data, path)
 
 # Intermediate mapping from RealAccess's to Protocol's
