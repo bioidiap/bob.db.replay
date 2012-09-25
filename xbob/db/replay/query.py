@@ -210,22 +210,8 @@ class Database(object):
     return self.session.query(Client).filter(Client.id==id).count() != 0
 
   def protocols(self):
-    """Returns the names of all registered protocols
-
-    .. deprecated:: 1.1.0
-
-      This function is *deprecated*, use :py:meth:`.Database.protos` instead.
-
+    """Returns all protocol objects.
     """
-
-    import warnings
-    warnings.warn("The method Database.protocols() is deprecated, use Database.protos() for more powerful object retrieval", DeprecationWarning)
-
-    self.assert_validity()
-    return tuple([k.name for k in self.session.query(Protocol)])
-
-  def protos(self):
-    """Returns all registered protocols"""
 
     self.assert_validity()
     return list(self.session.query(Protocol))
