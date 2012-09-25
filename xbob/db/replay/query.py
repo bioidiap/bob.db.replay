@@ -114,7 +114,7 @@ class Database(object):
 
     # check protocol validity
     if not protocol: protocol = 'grandtest' #default
-    VALID_PROTOCOLS = [k.name for k in self.protos()]
+    VALID_PROTOCOLS = [k.name for k in self.protocols()]
     if protocol not in VALID_PROTOCOLS:
       raise RuntimeError, 'Invalid protocol "%s". Valid values are %s' % \
           (protocol, VALID_PROTOCOLS)

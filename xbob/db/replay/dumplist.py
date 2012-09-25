@@ -52,7 +52,7 @@ def add_command(subparsers):
     protocols = ('waiting','for','database','creation')
     clients = tuple()
   else:
-    protocols = [k.name for k in db.protos()]
+    protocols = [k.name for k in db.protocols()]
     clients = [k.id for k in db.clients()]
 
   parser.add_argument('-d', '--directory', dest="directory", default='', help="if given, this path will be prepended to every entry returned (defaults to '%(default)s')")
