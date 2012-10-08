@@ -43,6 +43,11 @@ setup(
       'bob.test': [
         'replay = xbob.db.replay.test:ReplayDatabaseTest',
         ],
+      
+      # antispoofing database declaration
+      'antispoofing.utils.db': [
+        'replay     = xbob.db.replay.antispoofing:Database',
+        ],
       },
 
     classifiers = [
