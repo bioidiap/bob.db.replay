@@ -7,8 +7,7 @@
 
 from . import __doc__ as long_description
 from . import Database as ReplayDatabase
-from antispoofing.utils import File as FileBase
-from antispoofing.utils import Database as DatabaseBase
+from antispoofing.utils.db import File as FileBase, Database as DatabaseBase
 
 class File(FileBase):
 
@@ -58,15 +57,28 @@ class Database(DatabaseBase):
   __init__.__doc__ = DatabaseBase.__init__.__doc__
 
   def create_subparser(self, subparser, entry_point_name):
-    p = subparser.add_parser(entry_point_name, help=self.long_description())
+    from . import Attack as ReplayAttackModel, File as ReplayFileModel
+    from argparse import RawDescriptionHelpFormatter
 
-    protocols = [p.name for p in self.__db.protocols()]
+    ## remove '.. ' lines from rst
+    desc = '\n'.join([k for k in self.long_description().split('\n') if k.strip().find('.. ') != 0])
 
-    p.add_argument('--protocol', type=str, dest="replay_protocol", default='grandtest', help='The REPLAY-ATTACK protocol type may be specified   instead of the id switch to subselect a smaller number of files to operate on', choices=protocols)
+    p = subparser.add_parser(entry_point_name, 
+        help=self.short_description(),
+        description=desc,
+        formatter_class=RawDescriptionHelpFormatter)
 
-    p.add_argument('--support', type=str, choices=('fixed', 'hand'), default='', dest='replay_support', help='One of the valid supported attacks (fixed, hand) (defaults to "%(default)s")')
+    protocols = [k.name for k in self.__db.protocols()]
+    p.add_argument('--protocol', type=str, default='grandtest',
+        choices=protocols, dest="replay_protocol",
+      help='The protocol type may be specified instead of the the id switch to subselect a smaller number of files to operate on (defaults to "%(default)s")')
 
-    p.add_argument('--light', type=str, choices=('controlled', 'adverse'), default='', dest='replay_light', help='Types of illumination conditions (controlled,adverse) (defaults to "%(default)s")')
+    supports = ReplayAttackModel.attack_support_choices
+    p.add_argument('--support', type=str, dest='replay_support', choices=supports,
+        help="If you would like to select a specific support to be used, use this option (if unset, the default, use all)")
+
+    lights = ReplayFileModel.light_choices
+    p.add_argument('--light', type=str, choices=lights, dest='replay_light', help="Types of illumination conditions (if unset, the default, use all)")
   
     p.set_defaults(name=entry_point_name)
     p.set_defaults(cls=Database)
@@ -96,25 +108,25 @@ class Database(DatabaseBase):
   def get_data(self, group):
     """Returns either all objects or objects for a specific group"""
     
-    real = dict(self__kwargs)
+    real = dict(self.__kwargs)
     real.update({'groups': group, 'cls': 'real'})
-    attack = dict(self__kwargs)
+    attack = dict(self.__kwargs)
     attack.update({'groups': group, 'cls': 'attack'})
     return [File(k) for k in self.__db.objects(**real)], \
         [File(k) for k in self.__db.objects(**attack)]
 
   def get_train_data(self):
-    return get_data('train')
+    return self.get_data('train')
   get_train_data.__doc__ = DatabaseBase.get_train_data.__doc__
 
   def get_devel_data(self):
-    return get_data('devel')
+    return self.get_data('devel')
   get_devel_data.__doc__ = DatabaseBase.get_devel_data.__doc__
 
   def get_test_data(self):
-    return get_data('test')
+    return self.get_data('test')
   get_test_data.__doc__ = DatabaseBase.get_test_data.__doc__
 
   def get_all_data(self):
-    return get_data(None)
+    return self.get_data(None)
   get_all_data.__doc__ = DatabaseBase.get_all_data.__doc__

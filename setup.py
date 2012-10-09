@@ -25,7 +25,8 @@ setup(
 
     install_requires=[
       'setuptools',
-      'bob',  # base signal proc./machine learning library
+      'bob >= 1.1.0',
+      'antispoofing.utils',
     ],
 
     namespace_packages = [
@@ -46,7 +47,7 @@ setup(
       
       # antispoofing database declaration
       'antispoofing.utils.db': [
-        'replay     = xbob.db.replay.antispoofing:Database',
+        'replay = xbob.db.replay.spoofing:Database',
         ],
       },
 
