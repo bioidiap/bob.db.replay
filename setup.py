@@ -10,9 +10,9 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.replay',
-    version='1.0.0a1',
+    version='1.0.1a0',
     description='Replay Attack Database Access API for Bob',
-    url='http://github.com/bioidiap/xbob.db.replay',
+    url='http://pypi.python.org/pypi/xbob.db.replay',
     license='GPLv3',
     author='Andre Anjos',
     author_email='andre.anjos@idiap.ch',
@@ -52,8 +52,8 @@ setup(
       },
 
     classifiers = [
-      'Development Status :: 4 - Beta',
-      'Intended Audience :: Developers',
+      'Development Status :: 5 - Production/Stable',
+      'Intended Audience :: Science/Research',
       'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
       'Natural Language :: English',
       'Programming Language :: Python',
