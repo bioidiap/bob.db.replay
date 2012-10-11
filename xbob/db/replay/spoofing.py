@@ -40,6 +40,10 @@ class File(FileBase):
     return self.__f.make_path(directory=directory, extension=extension)
   make_path.__doc__ = FileBase.make_path.__doc__
 
+  def get_client_id(self):
+    return self.__f.client_id
+  get_client_id.__doc__ = FileBase.get_client_id.__doc__
+
 class Database(DatabaseBase):
   __doc__ = long_description
 
