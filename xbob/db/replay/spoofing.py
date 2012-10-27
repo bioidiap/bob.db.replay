@@ -44,6 +44,10 @@ class File(FileBase):
     return self.__f.client_id
   get_client_id.__doc__ = FileBase.get_client_id.__doc__
 
+  def is_real(self):
+    return self.__f.is_real()
+  is_real.__doc__ = FileBase.is_real.__doc__
+
 class Database(DatabaseBase):
   __doc__ = long_description
 
