@@ -28,6 +28,10 @@ class Database(object):
     # opens a session to the database - keep it open until the end
     self.connect()
 
+  def __del__(self):
+    """Releases the opened file descriptor"""
+    if self.session: self.session.bind.dispose()
+
   def connect(self):
     """Tries connecting or re-connecting to the database"""
     if not os.path.exists(SQLITE_FILE):
