@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.replay',
-    version='1.0.1a0',
+    version='1.0.1',
     description='Replay Attack Database Access API for Bob',
     url='http://pypi.python.org/pypi/xbob.db.replay',
     license='GPLv3',
@@ -44,7 +44,7 @@ setup(
       'bob.test': [
         'replay = xbob.db.replay.test:ReplayDatabaseTest',
         ],
-      
+
       # antispoofing database declaration
       'antispoofing.utils.db': [
         'replay = xbob.db.replay.spoofing:Database',
