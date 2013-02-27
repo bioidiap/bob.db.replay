@@ -93,6 +93,16 @@ class Database(DatabaseBase):
     
     return
   create_subparser.__doc__ = DatabaseBase.create_subparser.__doc__
+
+  def name(self):
+    from .driver import Interface
+    i = Interface()
+    return "Replay Attack Database (%s)" % i.name()
+
+  def version(self):
+    from .driver import Interface
+    i = Interface()
+    return i.version()
   
   def short_description(self):
     return "Anti-Spoofing database with 1300 videos produced at Idiap, Switzerland"
@@ -134,6 +144,35 @@ class Database(DatabaseBase):
   def get_test_data(self):
     return self.get_data('test')
   get_test_data.__doc__ = DatabaseBase.get_test_data.__doc__
+
+  def get_test_filters(self):
+    return ('device', 'support')
+
+  def get_filtered_test_data(self, filter):
+
+    def device_filter(obj, filter):
+      return obj.make_path().find('attack_' + filter) != -1
+
+    def support_filter(obj, filter):
+      return obj.make_path().find(filter) != -1
+
+    real, attack = self.get_test_data()
+
+    if filter == 'device':
+      return {
+          'print': (real, [k for k in attack if device_filter(k, 'print')]),
+          'mobile': (real, [k for k in attack if device_filter(k, 'mobile')]),
+          'highdef': (real, [k for k in attack if device_filter(k, 'highdef')]),
+          }
+    elif filter == 'support':
+      return {
+          'hand': (real, [k for k in attack if support_filter(k, 'hand')]),
+          'fixed': (real, [k for k in attack if support_filter(k, 'fixed')]),
+          }
+
+    raise RuntimeError, \
+        "filter parameter should specify a valid filter among `%s'" % \
+        self.get_test_filters()
 
   def get_all_data(self):
     return self.get_data(None)
