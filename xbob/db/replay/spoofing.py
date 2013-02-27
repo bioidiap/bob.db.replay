@@ -61,6 +61,7 @@ class Database(DatabaseBase):
         'protocol': args.replay_protocol,
         'support' : args.replay_support,
         'light'   : args.replay_light,
+        'clients' : args.replay_client if args.replay_client else None,
        }
   __init__.__doc__ = DatabaseBase.__init__.__doc__
 
@@ -87,6 +88,9 @@ class Database(DatabaseBase):
 
     lights = ReplayFileModel.light_choices
     p.add_argument('--light', type=str, choices=lights, dest='replay_light', help="Types of illumination conditions (if unset, the default, use all)")
+
+    identities = [k.id for k in self.__db.clients()]
+    p.add_argument('--client', type=int, action='append', choices=identities, dest='replay_client', help="Client identifier (if unset, the default, use all)")
   
     p.set_defaults(name=entry_point_name)
     p.set_defaults(cls=Database)
@@ -146,7 +150,7 @@ class Database(DatabaseBase):
   get_test_data.__doc__ = DatabaseBase.get_test_data.__doc__
 
   def get_test_filters(self):
-    return ('device', 'support')
+    return ('device', 'support', 'light')
 
   def get_filtered_test_data(self, filter):
 
@@ -154,6 +158,9 @@ class Database(DatabaseBase):
       return obj.make_path().find('attack_' + filter) != -1
 
     def support_filter(obj, filter):
+      return obj.make_path().find(filter) != -1
+
+    def light_filter(obj, filter):
       return obj.make_path().find(filter) != -1
 
     real, attack = self.get_test_data()
@@ -168,6 +175,11 @@ class Database(DatabaseBase):
       return {
           'hand': (real, [k for k in attack if support_filter(k, 'hand')]),
           'fixed': (real, [k for k in attack if support_filter(k, 'fixed')]),
+          }
+    elif filter == 'light':
+      return {
+          'controlled': (real, [k for k in attack if light_filter(k, 'controlled')]),
+          'adverse': (real, [k for k in attack if light_filter(k, 'adverse')]),
           }
 
     raise RuntimeError, \
