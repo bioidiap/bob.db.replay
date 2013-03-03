@@ -120,7 +120,9 @@ class Database(DatabaseBase):
     identities = [k.id for k in self.__db.clients()]
     p.add_argument('--client', type=int, action='append', choices=identities, dest='replay_client', help="Client identifier (if unset, the default, use all)")
 
-    p.add_argument('--ICB-2013', default=False, action='store_true', dest='icb2013', help="Retrieve the File list of the ICB 2013 competition anonymized test set (The 2nd competition on counter measures to 2D facial spoofing attacks).")  
+    p.add_argument('--ICB-2013', default=False, action='store_true', dest='icb2013', help="Retrieve the File list of the ICB 2013 competition anonymized test set (The 2nd competition on counter measures to 2D facial spoofing attacks).")
+
+    p.add_argument('--ICB-2013-average-size', default=100 , type=int, dest='icb2013_average_size', help="The number of accumulated frames to compute the average.")  
 
     p.set_defaults(name=entry_point_name)
     p.set_defaults(cls=Database)
@@ -240,7 +242,6 @@ class Database(DatabaseBase):
       devel_real,devel_attack = self.get_devel_data()
       anonymous_data,_ = self.get_ICB2013_test_data()
       return train_real + devel_real + anonymous_data, train_attack + devel_attack
-      #return anonymous_data,[]
     
     return self.get_data(None)
   get_all_data.__doc__ = DatabaseBase.get_all_data.__doc__
