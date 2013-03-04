@@ -24,14 +24,21 @@ class File(FileBase):
 
   def videofile(self, directory=None):
     if(self.__icb2013):
-      return self.__f.videofile(directory=os.path.join(directory,"anonymized_test_set","videos"))
+      if(directory == None):
+        return self.__f.videofile(directory=os.path.join("anonymized_test_set","videos"))
+      else:
+        return self.__f.videofile(directory=os.path.join(directory,"anonymized_test_set","videos"))
 
     return self.__f.videofile(directory=directory)
   videofile.__doc__ = FileBase.videofile.__doc__
 
   def facefile(self, directory=None):
     if(self.__icb2013):
-      return self.__f.facefile(directory=os.path.join(directory,"anonymized_test_set"))
+      if(directory == None):
+        return self.__f.facefile(directory=os.path.join("anonymized_test_set"))
+      else:
+        return self.__f.facefile(directory=os.path.join(directory,"anonymized_test_set"))
+
 
     return self.__f.facefile(directory=directory)
 
@@ -39,28 +46,40 @@ class File(FileBase):
 
   def bbx(self, directory=None):
     if(self.__icb2013):
-      return self.__f.bbx(directory=os.path.join(directory,"anonymized_test_set"))
+      if(directory == None):
+        return self.__f.bbx(directory=os.path.join("anonymized_test_set"))
+      else:
+        return self.__f.bbx(directory=os.path.join(directory,"anonymized_test_set"))
 
     return self.__f.bbx(directory=directory)
   bbx.__doc__ = FileBase.bbx.__doc__
 
   def load(self, directory=None, extension='.hdf5'):
     if(self.__icb2013):
-      return self.__f.load(directory=os.path.join(directory,"anonymized_test_set","videos"), extension=extension)
+      if(directory == None):
+        return self.__f.load(directory=os.path.join("anonymized_test_set","videos"), extension=extension)
+      else:
+        return self.__f.load(directory=os.path.join(directory,"anonymized_test_set","videos"), extension=extension)
 	
     return self.__f.load(directory=directory, extension=extension)
   load.__doc__ = FileBase.bbx.__doc__
 
   def save(self, data, directory=None, extension='.hdf5'):
     if(self.__icb2013):
-      return self.__f.save(data, directory=os.path.join(directory,"anonymized_test_set","videos"), extension=extension)
+      if(directory == None):
+        return self.__f.save(data, directory=os.path.join("anonymized_test_set","videos"), extension=extension)
+      else:
+        return self.__f.save(data, directory=os.path.join(directory,"anonymized_test_set","videos"), extension=extension)
 	
     return self.__f.save(data, directory=directory, extension=extension)
   save.__doc__ = FileBase.save.__doc__
 
   def make_path(self, directory=None, extension=None):
     if(self.__icb2013):
-      return self.__f.make_path(directory=os.path.join(directory,"anonymized_test_set","videos"), extension=extension)
+      if(directory == None):
+        return self.__f.make_path(directory=os.path.join("anonymized_test_set","videos"), extension=extension)
+      else:
+        return self.__f.make_path(directory=os.path.join(directory,"anonymized_test_set","videos"), extension=extension)
 	
     return self.__f.make_path(directory=directory, extension=extension)
   make_path.__doc__ = FileBase.make_path.__doc__
@@ -122,8 +141,6 @@ class Database(DatabaseBase):
 
     p.add_argument('--ICB-2013', default=False, action='store_true', dest='icb2013', help="Retrieve the File list of the ICB 2013 competition anonymized test set (The 2nd competition on counter measures to 2D facial spoofing attacks).")
 
-    p.add_argument('--ICB-2013-average-size', default=100 , type=int, dest='icb2013_average_size', help="The number of accumulated frames to compute the average.")  
-
     p.set_defaults(name=entry_point_name)
     p.set_defaults(cls=Database)
     
@@ -178,7 +195,7 @@ class Database(DatabaseBase):
 
   def get_test_data(self):
     if(self.__icb2013):
-      return get_ICB2013_test_data()
+      return self.get_ICB2013_test_data()
 
     return self.get_data('test')
 
