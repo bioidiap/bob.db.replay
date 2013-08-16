@@ -49,7 +49,7 @@ class Database(object):
     """Raise a RuntimeError if the database backend is not available"""
 
     if not self.is_valid():
-      raise RuntimeError, "Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE)
+      raise RuntimeError("Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE))
 
   def objects(self, support=Attack.attack_support_choices,
       protocol='grandtest', groups=Client.set_choices, cls=('attack', 'real'),
@@ -101,7 +101,7 @@ class Database(object):
         return check_validity((l,), obj, valid, default)
       for k in l:
         if k not in valid:
-          raise RuntimeError, 'Invalid %s "%s". Valid values are %s, or lists/tuples of those' % (obj, k, valid)
+          raise RuntimeError('Invalid %s "%s". Valid values are %s, or lists/tuples of those' % (obj, k, valid))
       return l
 
     # check if groups set are valid
@@ -120,8 +120,8 @@ class Database(object):
     if not protocol: protocol = 'grandtest' #default
     VALID_PROTOCOLS = [k.name for k in self.protocols()]
     if protocol not in VALID_PROTOCOLS:
-      raise RuntimeError, 'Invalid protocol "%s". Valid values are %s' % \
-          (protocol, VALID_PROTOCOLS)
+      raise RuntimeError('Invalid protocol "%s". Valid values are %s' % \
+          (protocol, VALID_PROTOCOLS))
 
     # checks client identity validity
     VALID_CLIENTS = [k.id for k in self.clients()]

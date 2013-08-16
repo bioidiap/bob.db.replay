@@ -19,7 +19,7 @@ def add_clients(session, protodir, verbose):
     if not s: continue #empty line
     id = int(s[0])
     set = s[1]
-    if verbose: print "Adding client %d on '%s' set..." % (id, set)
+    if verbose: print("Adding client %d on '%s' set..." % (id, set))
     session.add(Client(id, set))
 
 def add_real_lists(session, protodir, verbose):
@@ -108,7 +108,7 @@ def define_protocols(session, protodir, verbose):
       attack = os.path.join(protodir, 'attack-%s-allsupports-%s.txt' % (s[1], grp))
       if not os.path.exists(attack):
         if verbose:
-          print "Not considering protocol %s as attack list '%s' was not found" % (s[1], attack)
+          print("Not considering protocol %s as attack list '%s' was not found" % (s[1], attack))
         consider = False
       
       # check real file
@@ -117,7 +117,7 @@ def define_protocols(session, protodir, verbose):
         alt_real = os.path.join(protodir, 'real-%s.txt' % (grp,))
         if not os.path.exists(alt_real):
           if verbose:
-            print "Not considering protocol %s as real list '%s' or '%s' were not found" % (s[1], real, alt_real)
+            print("Not considering protocol %s as real list '%s' or '%s' were not found" % (s[1], real, alt_real))
           consider = False 
         else:
           real = alt_real
@@ -126,13 +126,13 @@ def define_protocols(session, protodir, verbose):
 
     if consider: valid[s[1]] = files
 
-  for protocol, groups in valid.iteritems():
-    if verbose: print "Creating protocol '%s'..." % protocol
+  for protocol, groups in valid.items():
+    if verbose: print("Creating protocol '%s'..." % protocol)
 
     # create protocol on the protocol table
     obj = Protocol(name=protocol)
 
-    for grp, flist in groups.iteritems():
+    for grp, flist in groups.items():
 
       counter = 0
       for fname in open(flist[0], 'rt'):
@@ -140,7 +140,7 @@ def define_protocols(session, protodir, verbose):
         q = session.query(Attack).join(File).filter(File.path == s).one()
         q.protocols.append(obj)
         counter += 1
-      if verbose: print "  -> %5s/%-6s: %d files" % (grp, "attack", counter)
+      if verbose: print("  -> %5s/%-6s: %d files" % (grp, "attack", counter))
    
       counter = 0
       for fname in open(flist[1], 'rt'):
@@ -148,7 +148,7 @@ def define_protocols(session, protodir, verbose):
         q = session.query(RealAccess).join(File).filter(File.path == s).one()
         q.protocols.append(obj)
         counter += 1
-      if verbose: print "  -> %5s/%-6s: %d files" % (grp, "real", counter)
+      if verbose: print("  -> %5s/%-6s: %d files" % (grp, "real", counter))
       
     session.add(obj)
 
@@ -175,7 +175,7 @@ def create(args):
 
   if args.recreate: 
     if args.verbose and os.path.exists(dbfile):
-      print('unlinking %s...' % dbfile)
+      print(('unlinking %s...' % dbfile))
     if os.path.exists(dbfile): os.unlink(dbfile)
 
   if not os.path.exists(os.path.dirname(dbfile)):

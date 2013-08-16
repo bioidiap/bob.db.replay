@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiagofrepereira@gmail.com>
-# Tue 01 Oct 2012 16:48:44 CEST 
+# Tue 01 Oct 2012 16:48:44 CEST
 
 """Replay attack database implementation as antispoofing.utils.db.Database"""
 
@@ -78,7 +78,7 @@ class Database(DatabaseBase):
     ## remove '.. ' lines from rst
     desc = '\n'.join([k for k in self.long_description().split('\n') if k.strip().find('.. ') != 0])
 
-    p = subparser.add_parser(entry_point_name, 
+    p = subparser.add_parser(entry_point_name,
         help=self.short_description(),
         description=desc,
         formatter_class=RawDescriptionHelpFormatter)
@@ -100,7 +100,7 @@ class Database(DatabaseBase):
 
     p.set_defaults(name=entry_point_name)
     p.set_defaults(cls=Database)
-    
+
     return
   create_subparser.__doc__ = DatabaseBase.create_subparser.__doc__
 
@@ -113,11 +113,11 @@ class Database(DatabaseBase):
     from .driver import Interface
     i = Interface()
     return i.version()
-  
+
   def short_description(self):
     return "Anti-Spoofing database with 1300 videos produced at Idiap, Switzerland"
   short_description.__doc__ = DatabaseBase.short_description.__doc__
- 
+
   def long_description(self):
     return Database.__doc__
   long_description.__doc__ = DatabaseBase.long_description.__doc__
@@ -127,12 +127,12 @@ class Database(DatabaseBase):
       return 'video' in propname
     elif propname is None:
       return True
-    elif isinstance(propname, (str,unicode)):
+    elif isinstance(propname, str):
       return 'video' == propname
 
     # does not implement the given access protocol
     return False
- 
+
   def get_data(self, group):
     """Returns either all objects or objects for a specific group"""
     real = dict(self.__kwargs)
@@ -158,7 +158,7 @@ class Database(DatabaseBase):
   def get_test_filters(self):
     return ('device', 'support', 'light')
 
-  
+
   def get_filtered_test_data(self, filter):
 
     def device_filter(obj, filter):
@@ -189,9 +189,8 @@ class Database(DatabaseBase):
           'adverse': (real, [k for k in attack if light_filter(k, 'adverse')]),
           }
 
-    raise RuntimeError, \
-        "filter parameter should specify a valid filter among `%s'" % \
-        self.get_test_filters()
+    raise RuntimeError("filter parameter should specify a valid filter among `%s'" % \
+        self.get_test_filters())
 
   def get_all_data(self):
     return self.get_data(None)

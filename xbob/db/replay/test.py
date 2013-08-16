@@ -4,16 +4,16 @@
 # Mon Aug 8 12:40:24 2011 +0200
 #
 # Copyright (C) 2011-2012 Idiap Research Institute, Martigny, Switzerland
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, version 3 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -24,6 +24,12 @@ import os, sys
 import unittest
 from .query import Database
 from .models import *
+
+authenticate_str = 'authenticate'
+if sys.version_info[0] < 3: authenticate_str = authenticate_str.encode('utf8')
+
+enroll_str = 'enroll'
+if sys.version_info[0] < 3: enroll_str = enroll_str.encode('utf8')
 
 class ReplayDatabaseTest(unittest.TestCase):
   """Performs various tests on the replay attack database."""
@@ -36,8 +42,8 @@ class ReplayDatabaseTest(unittest.TestCase):
     for v in f[:10]: #only the 10 first...
       self.assertTrue(isinstance(v.get_realaccess(), RealAccess))
       o = v.get_realaccess()
-      self.assertEqual(o.purpose, u'authenticate')
-    
+      self.assertEqual(o.purpose, authenticate_str)
+
     train = db.objects(cls='real', groups='train')
     self.assertEqual(len(train), 60)
 
@@ -77,34 +83,34 @@ class ReplayDatabaseTest(unittest.TestCase):
   def test02_queryAttacks(self):
 
     self.queryAttackType('grandtest', 1000)
-  
+
   def test03_queryPrintAttacks(self):
 
     self.queryAttackType('print', 200)
-  
+
   def test04_queryMobileAttacks(self):
 
     self.queryAttackType('mobile', 400)
-  
+
   def test05_queryHighDefAttacks(self):
 
     self.queryAttackType('highdef', 400)
-  
+
   def test06_queryPhotoAttacks(self):
 
     self.queryAttackType('photo', 600)
-  
+
   def test07_queryVideoAttacks(self):
 
     self.queryAttackType('video', 400)
-  
+
   def test08_queryEnrollments(self):
 
     db = Database()
     f = db.objects(cls='enroll')
     self.assertEqual(len(f), 100) #50 clients, 2 conditions
     for v in f:
-      self.assertEqual(v.get_realaccess().purpose, u'enroll')
+      self.assertEqual(v.get_realaccess().purpose, enroll_str)
 
   def test09_queryClients(self):
 
@@ -139,13 +145,13 @@ class ReplayDatabaseTest(unittest.TestCase):
     self.assertEqual(main('replay dumplist --self-test'.split()), 0)
 
   def test13_manage_dumplist_2(self):
-    
+
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --class=attack --group=devel --support=hand --protocol=highdef --self-test'.split()), 0)
 
   def test14_manage_dumplist_client(self):
-    
+
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --client=117 --self-test'.split()), 0)

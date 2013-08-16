@@ -155,13 +155,13 @@ class File(Base):
   def get_realaccess(self):
     """Returns the real-access object equivalent to this file or raise"""
     if len(self.realaccess) == 0:
-      raise RuntimeError, "%s is not a real-access" % self
+      raise RuntimeError("%s is not a real-access" % self)
     return self.realaccess[0]
 
   def get_attack(self):
     """Returns the attack object equivalent to this file or raise"""
     if len(self.attack) == 0:
-      raise RuntimeError, "%s is not an attack" % self
+      raise RuntimeError("%s is not an attack" % self)
     return self.attack[0]
 
   def load(self, directory=None, extension='.hdf5'):
