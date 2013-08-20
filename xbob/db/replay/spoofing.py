@@ -9,6 +9,7 @@ from . import __doc__ as long_description
 from . import Database as ReplayDatabase
 from antispoofing.utils.db import File as FileBase, Database as DatabaseBase
 import os
+import six
 
 class File(FileBase):
 
@@ -127,7 +128,7 @@ class Database(DatabaseBase):
       return 'video' in propname
     elif propname is None:
       return True
-    elif isinstance(propname, str):
+    elif isinstance(propname, six.string_types):
       return 'video' == propname
 
     # does not implement the given access protocol
