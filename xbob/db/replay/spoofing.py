@@ -7,11 +7,11 @@
 
 from . import __doc__ as long_description
 from . import Database as ReplayDatabase
-from antispoofing.utils.db import File as FileBase, Database as DatabaseBase
+import antispoofing.utils
 import os
 import six
 
-class File(FileBase):
+class File(antispoofing.utils.db.File):
 
   def __init__(self, f):
     """
@@ -23,38 +23,38 @@ class File(FileBase):
   def videofile(self, directory=None):
     return self.__f.videofile(directory=directory)
 
-  videofile.__doc__ = FileBase.videofile.__doc__
+  videofile.__doc__ = antispoofing.utils.db.File.videofile.__doc__
 
   def facefile(self, directory=None):
     return self.__f.facefile(directory=directory)
-  facefile.__doc__ = FileBase.facefile.__doc__
+  facefile.__doc__ = antispoofing.utils.db.File.facefile.__doc__
 
   def bbx(self, directory=None):
     return self.__f.bbx(directory=directory)
-  bbx.__doc__ = FileBase.bbx.__doc__
+  bbx.__doc__ = antispoofing.utils.db.File.bbx.__doc__
 
 
   def load(self, directory=None, extension='.hdf5'):
     return self.__f.load(directory=directory, extension=extension)
-  load.__doc__ = FileBase.bbx.__doc__
+  load.__doc__ = antispoofing.utils.db.File.bbx.__doc__
 
   def save(self, data, directory=None, extension='.hdf5'):
     return self.__f.save(data, directory=directory, extension=extension)
-  save.__doc__ = FileBase.save.__doc__
+  save.__doc__ = antispoofing.utils.db.File.save.__doc__
 
   def make_path(self, directory=None, extension=None):
     return self.__f.make_path(directory=directory, extension=extension)
-  make_path.__doc__ = FileBase.make_path.__doc__
+  make_path.__doc__ = antispoofing.utils.db.File.make_path.__doc__
 
   def get_client_id(self):
     return self.__f.client_id
-  get_client_id.__doc__ = FileBase.get_client_id.__doc__
+  get_client_id.__doc__ = antispoofing.utils.db.File.get_client_id.__doc__
 
   def is_real(self):
     return self.__f.is_real()
-  is_real.__doc__ = FileBase.is_real.__doc__
+  is_real.__doc__ = antispoofing.utils.db.File.is_real.__doc__
 
-class Database(DatabaseBase):
+class Database(antispoofing.utils.db.Database):
   __doc__ = long_description
 
   def __init__ (self, args=None):
@@ -70,7 +70,7 @@ class Database(DatabaseBase):
         'light'   : args.replay_light,
         'clients' : args.replay_client if args.replay_client else None,
        }
-  __init__.__doc__ = DatabaseBase.__init__.__doc__
+  __init__.__doc__ = antispoofing.utils.db.Database.__init__.__doc__
 
   def create_subparser(self, subparser, entry_point_name):
     from . import Attack as ReplayAttackModel, File as ReplayFileModel
@@ -103,7 +103,7 @@ class Database(DatabaseBase):
     p.set_defaults(cls=Database)
 
     return
-  create_subparser.__doc__ = DatabaseBase.create_subparser.__doc__
+  create_subparser.__doc__ = antispoofing.utils.db.Database.create_subparser.__doc__
 
   def name(self):
     from .driver import Interface
@@ -117,11 +117,11 @@ class Database(DatabaseBase):
 
   def short_description(self):
     return "Anti-Spoofing database with 1300 videos produced at Idiap, Switzerland"
-  short_description.__doc__ = DatabaseBase.short_description.__doc__
+  short_description.__doc__ = antispoofing.utils.db.Database.short_description.__doc__
 
   def long_description(self):
     return Database.__doc__
-  long_description.__doc__ = DatabaseBase.long_description.__doc__
+  long_description.__doc__ = antispoofing.utils.db.Database.long_description.__doc__
 
   def implements_any_of(self, propname):
     if isinstance(propname, (tuple,list)):
@@ -145,16 +145,16 @@ class Database(DatabaseBase):
 
   def get_train_data(self):
     return self.get_data('train')
-  get_train_data.__doc__ = DatabaseBase.get_train_data.__doc__
+  get_train_data.__doc__ = antispoofing.utils.db.Database.get_train_data.__doc__
 
   def get_devel_data(self):
     return self.get_data('devel')
-  get_devel_data.__doc__ = DatabaseBase.get_devel_data.__doc__
+  get_devel_data.__doc__ = antispoofing.utils.db.Database.get_devel_data.__doc__
 
   def get_test_data(self):
     return self.get_data('test')
 
-  get_test_data.__doc__ = DatabaseBase.get_test_data.__doc__
+  get_test_data.__doc__ = antispoofing.utils.db.Database.get_test_data.__doc__
 
   def get_test_filters(self):
     return ('device', 'support', 'light')
@@ -195,4 +195,4 @@ class Database(DatabaseBase):
 
   def get_all_data(self):
     return self.get_data(None)
-  get_all_data.__doc__ = DatabaseBase.get_all_data.__doc__
+  get_all_data.__doc__ = antispoofing.utils.db.Database.get_all_data.__doc__

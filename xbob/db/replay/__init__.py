@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Andre Anjos <andre.dos.anjos@gmail.com>
-# Wed 18 May 09:28:44 2011 
+# Wed 18 May 09:28:44 2011
 
 """The Replay-Attack Database for face spoofing consists of 1300 video clips of
 photo and video attack attempts to 50 clients, under different lighting
@@ -26,5 +26,6 @@ on your references:
 
 from .query import Database
 from .models import Client, File, Protocol, RealAccess, Attack
+import spoofing
 
 __all__ = dir()
