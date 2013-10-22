@@ -26,6 +26,6 @@ on your references:
 
 from .query import Database
 from .models import Client, File, Protocol, RealAccess, Attack
-import spoofing
+from . import spoofing
 
 __all__ = dir()
