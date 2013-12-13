@@ -103,7 +103,12 @@ class ReplayDatabaseTest(unittest.TestCase):
   def test07_queryVideoAttacks(self):
 
     self.queryAttackType('video', 400)
-
+  
+  '''  
+  def test07_queryDigitalPhotoAttacks(self):
+    self.queryAttackType('digitalphoto', 400)  
+  '''
+  
   def test08_queryEnrollments(self):
 
     db = Database()
