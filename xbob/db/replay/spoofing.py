@@ -74,7 +74,7 @@ class Database(antispoofing.utils.db.Database):
 
   def get_protocols(self):
     return [k.name for k in self.__db.protocols()]
-    
+
   def get_attack_types(self):
     # In the case of this DB, this method does not precisely return the attack types
     return [k.name for k in self.__db.protocols()]
@@ -116,7 +116,7 @@ class Database(antispoofing.utils.db.Database):
     from .driver import Interface
     i = Interface()
     return "Replay Attack Database (%s)" % i.name()
-    
+
   def short_name(self):
     from .driver import Interface
     i = Interface()
@@ -145,18 +145,14 @@ class Database(antispoofing.utils.db.Database):
 
     # does not implement the given access protocol
     return False
-<<<<<<< Updated upstream
 
-=======
- 
   def get_clients(self, group=None):
     clients = self.__db.clients()
     if group == None:
       return [client.id for client in clients]
     else:
       return [client.id for client in clients if client.set == group]
- 
->>>>>>> Stashed changes
+
   def get_data(self, group):
     """Returns either all objects or objects for a specific group"""
     real = dict(self.__kwargs)
@@ -165,7 +161,7 @@ class Database(antispoofing.utils.db.Database):
     attack.update({'groups': group, 'cls': 'attack'})
     return [File(k) for k in self.__db.objects(**real)], \
         [File(k) for k in self.__db.objects(**attack)]
-        
+
   def get_enroll_data(self, group=None):
     """Returns either all enrollment objects or enrollment objects for a specific group"""
     real = dict(self.__kwargs)
@@ -199,9 +195,9 @@ class Database(antispoofing.utils.db.Database):
 
     def light_filter(obj, filter):
       return obj.make_path().find(filter) != -1
-      
+
     def protocol_filter(obj, filter):
-      return obj.make_path().find(filter) != -1  
+      return obj.make_path().find(filter) != -1
 
     real, attack = self.get_test_data()
 
@@ -234,8 +230,8 @@ class Database(antispoofing.utils.db.Database):
           'photo': (real, [k for k in attack if protocol_filter(k, 'photo')]),
           'digitalphoto': (real, [k for k in attack if protocol_filter(k, 'photo') and not protocol_filter(k, 'print')]),
           'video': (real, [k for k in attack if protocol_filter(k, 'video')]),
-          }       
-          
+          }
+
   def get_filtered_devel_data(self, filter):
 
     def device_filter(obj, filter):
@@ -246,10 +242,10 @@ class Database(antispoofing.utils.db.Database):
 
     def light_filter(obj, filter):
       return obj.make_path().find(filter) != -1
-    
+
     def protocol_filter(obj, filter):
-      return obj.make_path().find(filter) != -1  
-      
+      return obj.make_path().find(filter) != -1
+
     real, attack = self.get_devel_data()
 
     if filter == 'device':
@@ -275,14 +271,14 @@ class Database(antispoofing.utils.db.Database):
           'photo': (real, [k for k in attack if protocol_filter(k, 'photo')]),
           'digitalphoto': (real, [k for k in attack if protocol_filter(k, 'photo') and not protocol_filter(k, 'print')]),
           'video': (real, [k for k in attack if protocol_filter(k, 'video')]),
-          }  
+          }
     elif filter == 'types':
       return {
           'print': (real, [k for k in attack if protocol_filter(k, 'print')]),
           'photo': (real, [k for k in attack if protocol_filter(k, 'photo')]),
           'digitalphoto': (real, [k for k in attack if protocol_filter(k, 'photo') and not protocol_filter(k, 'print')]),
           'video': (real, [k for k in attack if protocol_filter(k, 'video')]),
-          }  
+          }
 
     raise RuntimeError("filter parameter should specify a valid filter among `%s'" % \
         self.get_test_filters())
@@ -290,6 +286,6 @@ class Database(antispoofing.utils.db.Database):
   def get_all_data(self):
     return self.get_data(None)
   #get_all_data.__doc__ = DatabaseBase.get_all_data.__doc__
-  get_all_data.__doc__ = antispoofing.utils.db.Database.get_all_data.__doc__ 
+  get_all_data.__doc__ = antispoofing.utils.db.Database.get_all_data.__doc__
 
 
