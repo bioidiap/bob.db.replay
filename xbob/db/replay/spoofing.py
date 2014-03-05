@@ -93,7 +93,7 @@ class Database(antispoofing.utils.db.Database):
 
     protocols = [k.name for k in self.__db.protocols()]
     p.add_argument('--protocol', type=str, default='grandtest',
-        choices=protocols, dest="replay_protocol",
+        choices=protocols, dest="replay_protocol", nargs='+',
       help='The protocol type may be specified instead of the the id switch to subselect a smaller number of files to operate on (defaults to "%(default)s")')
 
     supports = ReplayAttackModel.attack_support_choices
@@ -145,7 +145,7 @@ class Database(antispoofing.utils.db.Database):
 
     # does not implement the given access protocol
     return False
-
+ 
   def get_clients(self, group=None):
     clients = self.__db.clients()
     if group == None:

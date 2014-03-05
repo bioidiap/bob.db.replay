@@ -103,12 +103,7 @@ class ReplayDatabaseTest(unittest.TestCase):
   def test07_queryVideoAttacks(self):
 
     self.queryAttackType('video', 400)
-  
-  '''  
-  def test07_queryDigitalPhotoAttacks(self):
-    self.queryAttackType('digitalphoto', 400)  
-  '''
-  
+    
   def test08_queryEnrollments(self):
 
     db = Database()
@@ -166,3 +161,31 @@ class ReplayDatabaseTest(unittest.TestCase):
     from bob.db.script.dbmanage import main
 
     self.assertEqual(main('replay checkfiles --self-test'.split()), 0)
+    
+  def test16_queryPrintVideoAttacks(self):
+
+    self.queryAttackType(('print','video'), 600)  
+    
+  def test17_queryPrintVideoAttacks(self):
+
+    self.queryAttackType(('print','photo'), 600)
+    
+  def test18_queryPrintVideoAttacks(self):
+
+    self.queryAttackType(('highdef','print'), 600)
+        
+  def test19_queryPrintVideoAttacks(self):
+
+    self.queryAttackType(('highdef','video'), 600)
+      
+  def test20_queryPrintVideoAttacks(self):
+
+    self.queryAttackType(('highdef','mobile','print'), 1000)  
+    
+  def test21_queryDigitalPhotoAttacks(self):
+  
+    self.queryAttackType('digitalphoto', 400)      
+    
+  def test22_queryPrintVideoAttacks(self):
+
+    self.queryAttackType(('digitalphoto','photo'), 600)    

@@ -119,16 +119,11 @@ class Database(object):
     # check protocol validity
     if not protocol: protocol = 'grandtest' #default
     VALID_PROTOCOLS = [k.name for k in self.protocols()]
-    if protocol not in VALID_PROTOCOLS:
-      raise RuntimeError('Invalid protocol "%s". Valid values are %s' % \
-          (protocol, VALID_PROTOCOLS))
+    protocol = check_validity(protocol, "protocol", VALID_PROTOCOLS, ('grandtest',))
 
     # checks client identity validity
     VALID_CLIENTS = [k.id for k in self.clients()]
     clients = check_validity(clients, "client", VALID_CLIENTS, None)
-
-    # resolve protocol object
-    protocol = self.protocol(protocol)
 
     # checks if the light is valid
     VALID_LIGHTS = self.lights()
@@ -137,6 +132,7 @@ class Database(object):
     # now query the database
     retval = []
 
+    from sqlalchemy.sql.expression import or_
     # real-accesses are simpler to query
     if 'enroll' in cls:
       q = self.session.query(File).join(RealAccess).join(Client)
@@ -149,25 +145,25 @@ class Database(object):
 
     # real-accesses are simpler to query
     if 'real' in cls:
-      q = self.session.query(File).join(RealAccess).join(Client)
+      q = self.session.query(File).join(RealAccess).join((Protocol, RealAccess.protocols)).join(Client)
       if groups: q = q.filter(Client.set.in_(groups))
       if clients: q = q.filter(Client.id.in_(clients))
       if light: q = q.filter(File.light.in_(light))
-      q = q.filter(RealAccess.protocols.contains(protocol))
+      q = q.filter(Protocol.name.in_(protocol))
       q = q.order_by(Client.id)
       retval += list(q)
 
     # attacks will have to be filtered a little bit more
     if 'attack' in cls:
-      q = self.session.query(File).join(Attack).join(Client)
+      q = self.session.query(File).join(Attack).join((Protocol, Attack.protocols)).join(Client)
       if groups: q = q.filter(Client.set.in_(groups))
       if clients: q = q.filter(Client.id.in_(clients))
       if support: q = q.filter(Attack.attack_support.in_(support))
       if light: q = q.filter(File.light.in_(light))
-      q = q.filter(Attack.protocols.contains(protocol))
+      q = q.filter(Protocol.name.in_(protocol))
       q = q.order_by(Client.id)
       retval += list(q)
-
+    
     return retval
 
   def files(self, directory=None, extension=None, **object_query):
