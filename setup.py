@@ -26,6 +26,7 @@ setup(
     install_requires=[
       'setuptools',
       'six',
+      'sqlalchemy',
       'antispoofing.utils',
       'bob.db.base',
     ],

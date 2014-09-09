@@ -6,6 +6,7 @@
 """Table models and functionality for the Replay Attack DB.
 """
 
+import sqlalchemy
 import os
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from bob.db.base.sqlalchemy_migration import Enum, relationship
