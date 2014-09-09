@@ -4,8 +4,8 @@ matrix:
   - python: 2.6
   - python: 2.7
     env:
-    - secure: XnteGmVwZmZGBafEq1I35HeiYlnuaTgIzQuPuitY+BsCfOsbZzJxhJep95uLlsmAMDNhsJnMrRq7IZK75OLeK4ZDhFTQ0clXQwpUZKrGazsi9uXH8zH8ts4P952CPZ8SEpFyl6Cz6zMsem/AykCBZEMzsc/4rwjyejP3If/Fg5U=
-    - secure: ZOyLb9iTrhUfheUnJF+hUkJlB4cf25sa88BBKVvti7XTZNk7HcOKc9eaX9DYJaLLrQI04sgMslA3uZUqcIHZgI9S8ChEcZPiU3L0zDkQZXh9YrpPFomED5Xh3kx2l1hoU5aN9fHpNllSk0iVYyyHh1uw7VWR+Lqq0duRnuPN3Q0=
+    - secure: G+01O0hR4OdUjV0rmzydDlVhrJOcVDBByecGnORLT9LV1qSd3IU04de7AfzkZhnhl58UxmmQsxd+XqPaCJoU/uTWKa0GW0BCJSxmLxx8cXco3Y8yV03zbBRJC8rbX7O+jrlx+6Js+CFpTfm+MlOXeeGAbky5gr1KZQD2pXqr+0w=
+    - secure: XUeglE6tOR0dckxT/2WPQivRY3n3tsWYnFbR1oQk17p+7o5/S5rXYxR7PvL9E8k4pprqFf54IGMVe41F5Q8k/5ZanAVRBKSnvod9or1INmqXgsMDS9yUjO0jTHnrazSn4jNIUhWd/7+1VuxdIPxUSBfVOr+9ow8IrQorQqc7eOc=
   - python: 3.2
     env:
     - NUMPYSPEC===1.8.0
@@ -19,7 +19,7 @@ before_install:
 - if [ -n "${NUMPYSPEC}" ]; then sudo apt-get install -qq gfortran; fi
 - if [ -n "${NUMPYSPEC}" ]; then pip install --upgrade pip setuptools; fi
 - if [ -n "${NUMPYSPEC}" ]; then pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel numpy$NUMPYSPEC; fi
-- pip install matplotlib==1.3.0 sphinx nose==1.3.0 jinja2==2.6 coveralls
+- pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel matplotlib==1.3.0 sphinx nose==1.3.0 jinja2==2.6 coveralls
 install:
 - python bootstrap.py
 - ./bin/buildout
