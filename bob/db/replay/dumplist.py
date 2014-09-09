@@ -29,7 +29,7 @@ def dumplist(args):
 
   output = sys.stdout
   if args.selftest:
-    from bob.db.utils import null
+    from bob.db.base.utils import null
     output = null()
 
   for f in r:

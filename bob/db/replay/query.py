@@ -9,7 +9,7 @@ replay attack database in the most obvious ways.
 
 import os
 import logging
-from bob.db import utils
+from bob.db.base import utils
 from .models import *
 from .driver import Interface
 

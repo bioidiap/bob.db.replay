@@ -134,31 +134,31 @@ class ReplayDatabaseTest(unittest.TestCase):
 
   def test11_manage_files(self):
 
-    from bob.db.script.dbmanage import main
+    from bob.db.base.script.dbmanage import main
 
     self.assertEqual(main('replay files'.split()), 0)
 
   def test12_manage_dumplist_1(self):
 
-    from bob.db.script.dbmanage import main
+    from bob.db.base.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --self-test'.split()), 0)
 
   def test13_manage_dumplist_2(self):
 
-    from bob.db.script.dbmanage import main
+    from bob.db.base.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --class=attack --group=devel --support=hand --protocol=highdef --self-test'.split()), 0)
 
   def test14_manage_dumplist_client(self):
 
-    from bob.db.script.dbmanage import main
+    from bob.db.base.script.dbmanage import main
 
     self.assertEqual(main('replay dumplist --client=117 --self-test'.split()), 0)
 
   def test15_manage_checkfiles(self):
 
-    from bob.db.script.dbmanage import main
+    from bob.db.base.script.dbmanage import main
 
     self.assertEqual(main('replay checkfiles --self-test'.split()), 0)
     

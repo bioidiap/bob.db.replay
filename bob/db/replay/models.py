@@ -8,8 +8,8 @@
 
 import os
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
-from bob.db.sqlalchemy_migration import Enum, relationship
-import bob.db.utils
+from bob.db.base.sqlalchemy_migration import Enum, relationship
+import bob.db.base.utils
 from sqlalchemy.orm import backref
 from sqlalchemy.ext.declarative import declarative_base
 import numpy
@@ -180,7 +180,7 @@ class File(Base):
       [optional] The extension of the filename - this will control the type of
       output and the codec for saving the input blob.
     """
-    return bob.io.load(self.make_path(directory, extension))
+    return bob.io.base.load(self.make_path(directory, extension))
 
   def save(self, data, directory=None, extension='.hdf5'):
     """Saves the input data at the specified location and using the given
@@ -201,8 +201,8 @@ class File(Base):
     """
 
     path = self.make_path(directory, extension)
-    bob.db.utils.makedirs_safe(os.path.dirname(path))
-    bob.io.save(data, path)
+    bob.db.base.utils.makedirs_safe(os.path.dirname(path))
+    bob.io.base.save(data, path)
 
 # Intermediate mapping from RealAccess's to Protocol's
 realaccesses_protocols = Table('realaccesses_protocols', Base.metadata,

@@ -39,7 +39,7 @@ def checkfiles(args):
   # report
   output = sys.stdout
   if args.selftest:
-    from bob.db.utils import null
+    from bob.db.base.utils import null
     output = null()
 
   if bad:

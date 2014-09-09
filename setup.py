@@ -9,13 +9,13 @@ from setuptools import setup, find_packages
 # parameters that define our package.
 setup(
 
-    name='xbob.db.replay',
-    version='1.0.4',
+    name='bob.db.replay',
+    version='2.0.0a0',
     description='Replay Attack Database Access API for Bob',
-    url='http://pypi.python.org/pypi/xbob.db.replay',
+    url='http://pypi.python.org/pypi/bob.db.replay',
     license='GPLv3',
-    author='Andre Anjos',
-    author_email='andre.anjos@idiap.ch',
+    author='Andre Anjos, Ivana Chingovska',
+    author_email='andre.anjos@idiap.ch, ivana.chingovska@idiap.ch',
     long_description=open('README.rst').read(),
 
     # This line is required for any distutils based packaging.
@@ -26,34 +26,29 @@ setup(
     install_requires=[
       'setuptools',
       'six',
-      'bob >= 1.1.0',
       'antispoofing.utils',
+      'bob.db.base',
     ],
 
     namespace_packages = [
-      'xbob',
-      'xbob.db',
+      'bob',
+      'bob.db',
       ],
 
     entry_points = {
       # bob database declaration
       'bob.db': [
-        'replay = xbob.db.replay.driver:Interface',
-        ],
-
-      # bob unittest declaration
-      'bob.test': [
-        'replay = xbob.db.replay.test:ReplayDatabaseTest',
+        'replay = bob.db.replay.driver:Interface',
         ],
 
       # antispoofing database declaration
       'antispoofing.utils.db': [
-        'replay = xbob.db.replay.spoofing:Database',
+        'replay = bob.db.replay.spoofing:Database',
         ],
       },
 
     classifiers = [
-      'Development Status :: 5 - Production/Stable',
+      'Development Status :: 4 - Beta',
       'Intended Audience :: Science/Research',
       'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
       'Natural Language :: English',
