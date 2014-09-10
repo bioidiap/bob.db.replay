@@ -25,6 +25,7 @@ install:
 - ./bin/buildout
 script:
 - ./bin/python -c 'from bob.db.replay import get_config; print(get_config())'
+- ./bin/bob_dbmanage.py replay download
 - ./bin/coverage run --source=bob.db.replay ./bin/nosetests -sv
 - ./bin/sphinx-build -b doctest doc sphinx
 - ./bin/sphinx-build -b html doc sphinx

@@ -30,7 +30,17 @@ class Database(object):
 
   def __del__(self):
     """Releases the opened file descriptor"""
-    if self.session: self.session.bind.dispose()
+    if self.session:
+      try:
+        # Since the dispose function re-creates a pool
+        #   which might fail in some conditions, e.g., when this destructor is called during the exit of the python interpreter
+        self.session.close()
+        self.session.bind.dispose()
+      except TypeError:
+        # ... I can just ignore the according exception...
+        pass
+      except AttributeError:
+        pass
 
   def connect(self):
     """Tries connecting or re-connecting to the database"""
@@ -163,7 +173,7 @@ class Database(object):
       q = q.filter(Protocol.name.in_(protocol))
       q = q.order_by(Client.id)
       retval += list(q)
-    
+
     return retval
 
   def files(self, directory=None, extension=None, **object_query):

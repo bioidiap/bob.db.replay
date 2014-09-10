@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Andre Anjos <andre.dos.anjos@gmail.com>
-# Thu 12 May 08:19:50 2011 
+# Thu 12 May 08:19:50 2011
 
 """This script creates the Replay-Attack database in a single pass.
 """
@@ -13,7 +13,7 @@ from .models import *
 
 def add_clients(session, protodir, verbose):
   """Add clients to the replay attack database."""
-  
+
   for client in open(os.path.join(protodir, 'clients.txt'), 'rt'):
     s = client.strip().split(' ', 2)
     if not s: continue #empty line
@@ -110,7 +110,7 @@ def define_protocols(session, protodir, verbose):
         if verbose:
           print("Not considering protocol %s as attack list '%s' was not found" % (s[1], attack))
         consider = False
-      
+
       # check real file
       real = os.path.join(protodir, 'real-%s-allsupports-%s.txt' % (s[1], grp))
       if not os.path.exists(real):
@@ -118,7 +118,7 @@ def define_protocols(session, protodir, verbose):
         if not os.path.exists(alt_real):
           if verbose:
             print("Not considering protocol %s as real list '%s' or '%s' were not found" % (s[1], real, alt_real))
-          consider = False 
+          consider = False
         else:
           real = alt_real
 
@@ -141,7 +141,7 @@ def define_protocols(session, protodir, verbose):
         q.protocols.append(obj)
         counter += 1
       if verbose: print("  -> %5s/%-6s: %d files" % (grp, "attack", counter))
-   
+
       counter = 0
       for fname in open(flist[1], 'rt'):
         s = os.path.splitext(fname.strip())[0]
@@ -149,7 +149,7 @@ def define_protocols(session, protodir, verbose):
         q.protocols.append(obj)
         counter += 1
       if verbose: print("  -> %5s/%-6s: %d files" % (grp, "real", counter))
-      
+
     session.add(obj)
 
 def create_tables(args):
@@ -173,7 +173,7 @@ def create(args):
 
   dbfile = args.files[0]
 
-  if args.recreate: 
+  if args.recreate:
     if args.verbose and os.path.exists(dbfile):
       print(('unlinking %s...' % dbfile))
     if os.path.exists(dbfile): os.unlink(dbfile)
@@ -192,7 +192,7 @@ def create(args):
   s.close()
 
   return 0
-  
+
 def add_command(subparsers):
   """Add specific subcommands that the action "create" can use"""
 
@@ -200,11 +200,11 @@ def add_command(subparsers):
 
   parser.add_argument('-R', '--recreate', action='store_true', default=False,
       help="If set, I'll first erase the current database")
-  parser.add_argument('-v', '--verbose', action='count',
+  parser.add_argument('-v', '--verbose', action='count', default=0,
       help="Do SQL operations in a verbose way")
-  parser.add_argument('-D', '--protodir', action='store', 
+  parser.add_argument('-D', '--protodir', action='store',
       default='/idiap/group/replay/database/protocols/replayattack-database/protocols',
       metavar='DIR',
       help="Change the relative path to the directory containing the protocol definitions for replay attacks (defaults to %(default)s)")
-  
+
   parser.set_defaults(func=create) #action
