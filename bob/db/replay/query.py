@@ -354,6 +354,9 @@ class Database(object):
     fullpath = os.path.join(directory, str(fobj.path) + extension)
     fulldir = os.path.dirname(fullpath)
     utils.makedirs_safe(fulldir)
+
+    from bob.io.base import save
+    
     save(obj, fullpath)
 
   def save(self, data, directory, extension):
