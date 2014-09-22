@@ -1,3 +1,14 @@
+.. image:: https://travis-ci.org/bioidiap/bob.db.replay.svg?branch=master
+   :target: https://travis-ci.org/bioidiap/bob.db.replay
+.. image:: https://coveralls.io/repos/bioidiap/bob.db.replay/badge.png
+   :target: https://coveralls.io/r/bioidiap/bob.db.replay
+.. image:: http://img.shields.io/github/tag/bioidiap/bob.db.replay.png
+   :target: https://github.com/bioidiap/bob.db.replay
+.. image:: http://img.shields.io/pypi/v/bob.db.replay.png
+   :target: https://pypi.python.org/pypi/bob.db.replay
+.. image:: http://img.shields.io/pypi/dm/bob.db.replay.png
+   :target: https://pypi.python.org/pypi/bob.db.replay
+
 ========================
  Replay Attack Database
 ========================
