@@ -1,85 +1,45 @@
+.. vim: set fileencoding=utf-8 :
+.. Manuel Guenther <manuel.guenther@idiap.ch>
+.. Fri Oct 31 14:18:57 CET 2014
+
+.. image:: http://img.shields.io/badge/docs-stable-yellow.png
+   :target: http://pythonhosted.org/bob.db.replay/index.html
+.. image:: http://img.shields.io/badge/docs-latest-orange.png
+   :target: https://www.idiap.ch/software/bob/docs/latest/bioidiap/bob.db.replay/master/index.html
 .. image:: https://travis-ci.org/bioidiap/bob.db.replay.svg?branch=master
    :target: https://travis-ci.org/bioidiap/bob.db.replay
 .. image:: https://coveralls.io/repos/bioidiap/bob.db.replay/badge.png
    :target: https://coveralls.io/r/bioidiap/bob.db.replay
-.. image:: http://img.shields.io/github/tag/bioidiap/bob.db.replay.png
-   :target: https://github.com/bioidiap/bob.db.replay
+.. image:: https://img.shields.io/badge/github-master-0000c0.png
+   :target: https://github.com/bioidiap/bob.db.replay/tree/master
 .. image:: http://img.shields.io/pypi/v/bob.db.replay.png
    :target: https://pypi.python.org/pypi/bob.db.replay
 .. image:: http://img.shields.io/pypi/dm/bob.db.replay.png
    :target: https://pypi.python.org/pypi/bob.db.replay
+.. image:: https://img.shields.io/badge/original-data--files-a000a0.png
+   :target: http://www.idiap.ch/dataset/replayattack
 
-========================
- Replay Attack Database
-========================
+===================================================
+ Replay Attack Database Database Interface for Bob
+===================================================
 
-This package contains the access API and descriptions for the `Replay Attack
-Database <http://www.idiap.ch/dataset/replayattack/>`_. The actual raw data for
-the database should be downloaded from the original URL. This package only
-contains the `Bob <http://www.idiap.ch/software/bob/>`_ accessor methods to use
-the DB directly from python, with our certified protocols.
+This package contains the access API and descriptions for the `Replay Attack`_ Database.
+The actual raw data for the database should be downloaded from the original URL.
+This package only contains the Bob_ accessor methods to use the database directly from Python, with our certified protocols.
 
-You would normally not install this package unless you are maintaining it. What
-you would do instead is to tie it in at the package you need to **use** it.
-There are a few ways to achieve this:
 
-1. You can add this package as a requirement at the ``setup.py`` for your own
-   `satellite package
-   <https://github.com/idiap/bob/wiki/Virtual-Work-Environments-with-Buildout>`_
-   or to your Buildout ``.cfg`` file, if you prefer it that way. With this
-   method, this package gets automatically downloaded and installed on your
-   working environment, or
+Installation
+------------
+To install this package -- alone or together with other `Packages of Bob <https://github.com/idiap/bob/wiki/Packages>`_ -- please read the `Installation Instructions <https://github.com/idiap/bob/wiki/Installation>`_.
+For Bob_ to be able to work properly, some dependent packages are required to be installed.
+Please make sure that you have read the `Dependencies <https://github.com/idiap/bob/wiki/Dependencies>`_ for your operating system.
 
-2. You can manually download and install this package using commands like
-   ``easy_install`` or ``pip``.
+Documentation
+-------------
+For further documentation on this package, please read the `Stable Version <http://pythonhosted.org/bob.db.replay/index.html>`_ or the `Latest Version <https://www.idiap.ch/software/bob/docs/latest/bioidiap/bob.db.replay/master/index.html>`_ of the documentation.
+For a list of tutorials on this or the other packages ob Bob_, or information on submitting issues, asking questions and starting discussions, please visit its website.
 
-The package is available in two different distribution formats:
+.. _bob: https://www.idiap.ch/software/bob
+.. _replay attack: http://www.idiap.ch/dataset/replayattack
 
-1. You can download it from `PyPI <http://pypi.python.org/pypi>`_, or
 
-2. You can download it in its source form from `its git repository
-   <https://github.com/bioidiap/xbob.db.replay>`_. When you download the
-   version at the git repository, you will need to run a command to recreate
-   the backend SQLite file required for its operation. This means that the
-   database raw files must be installed somewhere in this case. With option
-   ``1`` you can run in `dummy` mode and only download the raw data files for
-   the database once you are happy with your setup.
-
-You can mix and match points 1/2 and a/b above based on your requirements. Here
-are some examples:
-
-Modify your setup.py and download from PyPI
-===========================================
-
-That is the easiest. Edit your ``setup.py`` in your satellite package and add
-the following entry in the ``install_requires`` section (note: ``...`` means
-`whatever extra stuff you may have in-between`, don't put that on your
-script)::
-
-    install_requires=[
-      ...
-      "xbob.db.replay",
-    ],
-
-Proceed normally with your ``boostrap/buildout`` steps and you should be all
-set. That means you can now import the ``xbob.db.replay`` namespace into your scripts.
-
-Modify your buildout.cfg and download from git
-==============================================
-
-You will need to add a dependence to `mr.developer
-<http://pypi.python.org/pypi/mr.developer/>`_ to be able to install from our
-git repositories. Your ``buildout.cfg`` file should contain the following
-lines::
-
-  [buildout]
-  ...
-  extensions = mr.developer
-  auto-checkout = *
-  eggs = bob
-         ...
-         xbob.db.replay
-
-  [sources]
-  xbob.db.replay = git https://github.com/bioidiap/xbob.db.replay.git
-  ...

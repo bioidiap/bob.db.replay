@@ -34,21 +34,22 @@ setup(
     namespace_packages = [
       'bob',
       'bob.db',
-      ],
+    ],
 
     entry_points = {
       # bob database declaration
       'bob.db': [
         'replay = bob.db.replay.driver:Interface',
-        ],
+      ],
 
       # antispoofing database declaration
       'antispoofing.utils.db': [
         'replay = bob.db.replay.spoofing:Database',
-        ],
-      },
+      ],
+    },
 
     classifiers = [
+      'Framework :: Bob',
       'Development Status :: 4 - Beta',
       'Intended Audience :: Science/Research',
       'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
@@ -57,5 +58,5 @@ setup(
       'Programming Language :: Python :: 3',
       'Topic :: Scientific/Engineering :: Artificial Intelligence',
       'Topic :: Database :: Front-Ends',
-      ],
+    ],
 )
