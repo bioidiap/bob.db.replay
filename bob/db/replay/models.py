@@ -202,7 +202,7 @@ class File(Base):
     """
 
     path = self.make_path(directory, extension)
-    bob.db.base.utils.makedirs_safe(os.path.dirname(path))
+    bob.io.base.create_directories_safe(os.path.dirname(path))
     bob.io.base.save(data, path)
 
 # Intermediate mapping from RealAccess's to Protocol's
