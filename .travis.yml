@@ -7,28 +7,27 @@ matrix:
     - secure: G+01O0hR4OdUjV0rmzydDlVhrJOcVDBByecGnORLT9LV1qSd3IU04de7AfzkZhnhl58UxmmQsxd+XqPaCJoU/uTWKa0GW0BCJSxmLxx8cXco3Y8yV03zbBRJC8rbX7O+jrlx+6Js+CFpTfm+MlOXeeGAbky5gr1KZQD2pXqr+0w=
     - secure: XUeglE6tOR0dckxT/2WPQivRY3n3tsWYnFbR1oQk17p+7o5/S5rXYxR7PvL9E8k4pprqFf54IGMVe41F5Q8k/5ZanAVRBKSnvod9or1INmqXgsMDS9yUjO0jTHnrazSn4jNIUhWd/7+1VuxdIPxUSBfVOr+9ow8IrQorQqc7eOc=
     - BOB_DOCUMENTATION_SERVER=https://www.idiap.ch/software/bob/docs/latest/bioidiap/%s/master
-  - python: 3.2
-    env:
-    - NUMPYSPEC===1.8.0
+    - BOB_UPLOAD_WHEEL="--universal"
   - python: 3.3
-    env:
-    - NUMPYSPEC===1.8.0
+  - python: 3.4
 before_install:
 - sudo add-apt-repository -y ppa:biometrics/bob
 - sudo apt-get update -qq
 - sudo apt-get install -qq --force-yes libboost-all-dev libblitz1-dev libhdf5-serial-dev libatlas-dev libatlas-base-dev liblapack-dev libsvm-dev texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-- if [ -n "${NUMPYSPEC}" ]; then sudo apt-get install -qq gfortran; fi
-- if [ -n "${NUMPYSPEC}" ]; then pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel numpy$NUMPYSPEC; fi
-- pip install --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel matplotlib==1.3.1 sphinx nose==1.3.0 jinja2==2.6 coveralls pygments==1.6
+- pip install --find-links https://www.idiap.ch/software/bob/wheels/travis/ --use-wheel sphinx nose numpy matplotlib coverage
+- pip install --find-links https://www.idiap.ch/software/bob/wheels/travis/ --use-wheel --pre -r requirements.txt coveralls
 install:
 - python bootstrap-buildout.py
-- ./bin/buildout
+- ./bin/buildout buildout:develop=. buildout:extensions=bob.buildout buildout:auto-checkout=
 script:
-- ./bin/python -c 'from bob.db.replay import get_config; print(get_config())'
+- ./bin/python -c 'import pkg_resources; from bob.db.replay import get_config; print(get_config())'
 - ./bin/bob_dbmanage.py replay download
 - ./bin/coverage run --source=bob.db.replay ./bin/nosetests -sv
 - ./bin/sphinx-build -b doctest doc sphinx
 - ./bin/sphinx-build -b html doc sphinx
 after_success:
 - coveralls
-- ./src/bob.extension/scripts/upload-sphinx.sh
+- wget https://raw.githubusercontent.com/bioidiap/bob.extension/master/scripts/upload-{sphinx,wheel}.sh
+- chmod a+x upload-sphinx.sh upload-wheel.sh
+- ./upload-sphinx.sh
+- ./upload-wheel.sh

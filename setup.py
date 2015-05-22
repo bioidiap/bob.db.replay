@@ -3,7 +3,11 @@
 # Andre Anjos <andre.anjos@idiap.ch>
 # Sex 10 Ago 2012 14:22:33 CEST
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, dist
+dist.Distribution(dict(setup_requires=['bob.extension']))
+
+from bob.extension.utils import load_requirements
+install_requires = load_requirements()
 
 # Define package version
 version = open("version.txt").read().rstrip()
@@ -26,13 +30,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
 
-    install_requires=[
-      'setuptools',
-      'six',
-      'sqlalchemy',
-      'antispoofing.utils',
-      'bob.db.base',
-    ],
+    install_requires = install_requires,
 
     namespace_packages = [
       'bob',
