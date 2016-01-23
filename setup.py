@@ -19,7 +19,7 @@ setup(
     name='bob.db.replay',
     version=version,
     description='Replay Attack Database Access API for Bob',
-    url='http://pypi.python.org/pypi/bob.db.replay',
+    url='http://github.com/bioidiap/bob.db.replay',
     license='GPLv3',
     author='Andre Anjos, Ivana Chingovska',
     author_email='andre.anjos@idiap.ch, ivana.chingovska@idiap.ch',
