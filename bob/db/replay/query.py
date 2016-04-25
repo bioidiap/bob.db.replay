@@ -143,7 +143,7 @@ class Database(object):
     # now query the database
     retval = []
 
-    from sqlalchemy.sql.expression import or_
+    # from sqlalchemy.sql.expression import or_
     # real-accesses are simpler to query
     if 'enroll' in cls:
       q = self.session.query(File).join(RealAccess).join(Client)
