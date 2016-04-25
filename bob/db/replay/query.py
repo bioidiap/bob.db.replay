@@ -207,11 +207,35 @@ class Database(object):
 
     return dict([(k.id, k.make_path(directory, extension)) for k in self.objects(**object_query)])
 
-  def clients(self):
-    """Returns an iterable with all known clients"""
+  def clients(self, groups=None, protocol=None):
+    """Returns a list of Clients for the specific query by the user.
+    If no parameters are specified - return all clients.
+
+    Keyword Parameters:
+
+    protocol
+        A Replay attack protocol.
+
+    groups
+        The groups to which the subjects attached to the models belong ('train', 'devel', 'eval')
+
+    Returns: A list containing the ids of all models belonging to the given group.
+    """
 
     self.assert_validity()
-    return list(self.session.query(Client))
+    # return list(self.session.query(Client))
+    if protocol == '.':
+      protocol = None
+    protocol = self.check_parameters_for_validity(protocol, "protocol", self.protocol_names(), None)
+    groups = self.check_parameters_for_validity(groups, "group", self.groups(), self.groups())
+
+    retval = []
+    if groups:
+      q = self.session.query(Client).filter(Client.set.in_(groups))
+      q = q.order_by(Client.id)
+      retval = list(q)
+
+    return retval
 
   def has_client_id(self, id):
     """Returns True if we have a client with a certain integer identifier"""
@@ -219,12 +243,25 @@ class Database(object):
     self.assert_validity()
     return self.session.query(Client).filter(Client.id==id).count() != 0
 
+  def client(self, id):
+    """Returns the Client object in the database given a certain id. Raises
+    an error if that does not exist."""
+
+    return self.session.query(Client).filter(Client.id == id).one()
+
   def protocols(self):
     """Returns all protocol objects.
     """
 
     self.assert_validity()
     return list(self.session.query(Protocol))
+
+  def protocol_names(self):
+    """Returns all registered protocol names"""
+
+    l = self.protocols()
+    retval = [str(k.name) for k in l]
+    return retval
 
   def has_protocol(self, name):
     """Tells if a certain protocol is available"""

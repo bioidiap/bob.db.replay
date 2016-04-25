@@ -6,7 +6,6 @@
 """Table models and functionality for the Replay Attack DB.
 """
 
-import sqlalchemy
 import os
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from bob.db.base.sqlalchemy_migration import Enum, relationship
@@ -170,9 +169,6 @@ class File(Base):
 
     Keyword parameters:
 
-    data
-      The data blob to be saved (normally a :py:class:`numpy.ndarray`).
-
     directory
       [optional] If not empty or None, this directory is prefixed to the final
       file destination
@@ -180,6 +176,9 @@ class File(Base):
     extension
       [optional] The extension of the filename - this will control the type of
       output and the codec for saving the input blob.
+
+    Returns:
+      The data blob that is loaded (normally a :py:class:`numpy.ndarray`).
     """
     return bob.io.base.load(self.make_path(directory, extension))
 
