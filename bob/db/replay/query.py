@@ -12,7 +12,6 @@ import logging
 from bob.db.base import utils
 from .models import *
 from .driver import Interface
-import bob.db.verification.utils
 
 INFO = Interface()
 
@@ -143,7 +142,7 @@ class Database(object):
     # now query the database
     retval = []
 
-    # from sqlalchemy.sql.expression import or_
+    from sqlalchemy.sql.expression import or_
     # real-accesses are simpler to query
     if 'enroll' in cls:
       q = self.session.query(File).join(RealAccess).join(Client)
@@ -208,35 +207,11 @@ class Database(object):
 
     return dict([(k.id, k.make_path(directory, extension)) for k in self.objects(**object_query)])
 
-  def clients(self, groups=None, protocol=None):
-    """Returns a list of Clients for the specific query by the user.
-    If no parameters are specified - return all clients.
-
-    Keyword Parameters:
-
-    protocol
-        A Replay attack protocol.
-
-    groups
-        The groups to which the subjects attached to the models belong ('train', 'devel', 'eval')
-
-    Returns: A list containing the ids of all models belonging to the given group.
-    """
+  def clients(self):
+    """Returns an iterable with all known clients"""
 
     self.assert_validity()
-    # return list(self.session.query(Client))
-    if protocol == '.':
-      protocol = None
-    protocol = self.check_parameters_for_validity(protocol, "protocol", self.protocol_names(), None)
-    groups = self.check_parameters_for_validity(groups, "group", self.groups(), self.groups())
-
-    retval = []
-    if groups:
-      q = self.session.query(Client).filter(Client.set.in_(groups))
-      q = q.order_by(Client.id)
-      retval = list(q)
-
-    return retval
+    return list(self.session.query(Client))
 
   def has_client_id(self, id):
     """Returns True if we have a client with a certain integer identifier"""
@@ -244,25 +219,12 @@ class Database(object):
     self.assert_validity()
     return self.session.query(Client).filter(Client.id==id).count() != 0
 
-  def client(self, id):
-    """Returns the Client object in the database given a certain id. Raises
-    an error if that does not exist."""
-
-    return self.session.query(Client).filter(Client.id == id).one()
-
   def protocols(self):
     """Returns all protocol objects.
     """
 
     self.assert_validity()
     return list(self.session.query(Protocol))
-
-  def protocol_names(self):
-    """Returns all registered protocol names"""
-
-    l = self.protocols()
-    retval = [str(k.name) for k in l]
-    return retval
 
   def has_protocol(self, name):
     """Tells if a certain protocol is available"""
@@ -427,89 +389,3 @@ class Database(object):
 
     for key, value in data:
       self.save_one(key, value, directory, extension)
-
-  def check_parameters_for_validity(self, parameters, parameter_description, valid_parameters, default_parameters=None):
-    """Checks the given parameters for validity, i.e., if they are contained in the set of valid parameters.
-    It also assures that the parameters form a tuple or a list.
-    If parameters is 'None' or empty, the default_parameters will be returned (if default_parameters is omitted, all valid_parameters are returned).
-
-    This function will return a tuple or list of parameters, or raise a ValueError.
-
-    Keyword parameters:
-
-    parameters : str, [str] or None
-      The parameters to be checked.
-      Might be a string, a list/tuple of strings, or None.
-
-    parameter_description : str
-      A short description of the parameter.
-      This will be used to raise an exception in case the parameter is not valid.
-
-    valid_parameters : [str]
-      A list/tuple of valid values for the parameters.
-
-    default_parameters : [str] or None
-      The list/tuple of default parameters that will be returned in case parameters is None or empty.
-      If omitted, all valid_parameters are used.
-    """
-    if parameters is None:
-      # parameters are not specified, i.e., 'None' or empty lists
-      parameters = default_parameters if default_parameters is not None else valid_parameters
-
-    if not isinstance(parameters, (list, tuple, set)):
-      # parameter is just a single element, not a tuple or list -> transform it into a tuple
-      parameters = (parameters,)
-
-    # perform the checks
-    for parameter in parameters:
-      if parameter not in valid_parameters:
-        raise ValueError("Invalid %s '%s'. Valid values are %s, or lists/tuples of those" % (parameter_description, parameter, valid_parameters))
-
-    # check passed, now return the list/tuple of parameters
-    return parameters
-
-  def check_parameter_for_validity(self, parameter, parameter_description, valid_parameters, default_parameter=None):
-    """Checks the given parameter for validity, i.e., if it is contained in the set of valid parameters.
-    If the parameter is 'None' or empty, the default_parameter will be returned, in case it is specified, otherwise a ValueError will be raised.
-
-    This function will return the parameter after the check tuple or list of parameters, or raise a ValueError.
-
-    Keyword parameters:
-
-    parameter : str
-      The single parameter to be checked.
-      Might be a string or None.
-
-    parameter_description : str
-      A short description of the parameter.
-      This will be used to raise an exception in case the parameter is not valid.
-
-    valid_parameters : [str]
-      A list/tuple of valid values for the parameters.
-
-    default_parameters : [str] or None
-      The default parameter that will be returned in case parameter is None or empty.
-      If omitted and parameter is empty, a ValueError is raised.
-    """
-    if parameter is None:
-      # parameter not specified ...
-      if default_parameter is not None:
-        # ... -> use default parameter
-        parameter = default_parameter
-      else:
-        # ... -> raise an exception
-        raise ValueError("The %s has to be one of %s, it might not be 'None'." % (parameter_description, valid_parameters))
-
-    if isinstance(parameter, (list, tuple, set)):
-      # the parameter is in a list/tuple ...
-      if len(parameter) > 1:
-        raise ValueError("The %s has to be one of %s, it might not be more than one (%s was given)." % (parameter_description, valid_parameters, parameter))
-      # ... -> we take the first one
-      parameter = parameter[0]
-
-    # perform the check
-    if parameter not in valid_parameters:
-      raise ValueError("The given %s '%s' is not allowed. Please choose one of %s." % (parameter_description, parameter, valid_parameters))
-
-    # tests passed -> return the parameter
-    return parameter

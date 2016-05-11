@@ -9,20 +9,20 @@
   verification experiments (good to use in bob.bio.base framework).
 """
 
-from . import __doc__ as long_description
 from .query import Database as ReplayDatabase
-from .models import File as ReplayFile
-import bob.db.verification.utils
+from .models import File as ReplayFile, Client, Protocol
+from bob.db.verification.utils import File as BaseFile
+from bob.db.verification.utils import Database as BaseDatabase
 
 
-class File(bob.db.verification.utils.File):
+class File(BaseFile):
 
   def __init__(self, f):
     """
     Initializes this File object with an File equivalent from the underlying SQl-based interface for
     Replay database.
     """
-    bob.db.verification.utils.File.__init__(self, client_id=f.client_id, path=f.path, file_id=f.id)
+    BaseFile.__init__(self, client_id=f.client_id, path=f.path, file_id=f.id)
 
     self.__f = f
 
@@ -35,78 +35,51 @@ class File(bob.db.verification.utils.File):
     """
     Get ID of the client that this file belongs to.
     """
-
     return self.__f.client_id
 
 
-class Database(bob.db.verification.utils.Database):
+class Database(BaseDatabase):
   """
   Implements verification API for querying Replay database.
   """
-  __doc__ = long_description
+  __doc__ = __doc__
 
   def __init__(self, original_directory=None, original_extension=None):
     # call base class constructors to open a session to the database
-    bob.db.verification.utils.Database.__init__(self, original_directory=original_directory, original_extension=original_extension)
+    BaseDatabase.__init__(self, original_directory=original_directory, original_extension=original_extension)
 
     self.__db = ReplayDatabase()
+    self.group_mapping = dict(zip(('train', 'devel', 'test'), ('world', 'dev', 'eval')))
+    self.reverse_group_mapping = dict(zip(('world', 'dev', 'eval'), ('train', 'devel', 'test')))
 
-  def groups(self, protocol=None):
-    """Returns the names of all registered groups"""
+  def convert_group_names_bio(self, group_names):
+    """
+    In the SQL Database group names are ('train', 'devel', 'test')
+    But bob.bio.base expects the names to be: ('world', 'dev', 'eval')
+    """
+    if group_names is None:
+      return None
+    if isinstance(group_names, str):
+      return self.group_mapping.get(group_names)
+    return [self.group_mapping[g] for g in group_names]
 
-    return self.__db.groups()
+  def convert_group_names_sql(self, group_names):
+    if group_names is None:
+      return None
+    if isinstance(group_names, str):
+      return self.reverse_group_mapping.get(group_names)
+    return [self.reverse_group_mapping[g] for g in group_names]
 
   def protocols(self):
     """Returns all registered protocols"""
-    return self.__db.protocols()
+
+    return self.__db.protocols() + [Protocol('licit')]
 
   def protocol_names(self):
     """Returns all registered protocol names"""
+    return [p.name for p in self.protocols()]
 
-    return self.__db.protocol_names()
-
-  def has_protocol(self, name):
-    """Tells if a certain protocol is available"""
-
-    return self.__db.has_protocol(name)
-
-  def protocol(self, name):
-    """Returns the protocol object in the database given a certain name. Raises
-    an error if that does not exist."""
-
-    return self.__db.protocol(name)
-
-  def models(self, groups=None, protocol=None):
-    """Returns a set of models for the specific query by the user.
-
-    Keyword Parameters:
-
-    protocol
-      Protocol is ignored in this context, since its choice has no influence on models.
-
-    groups
-      The groups to which the subjects attached to the models belong ('dev', 'eval', 'world')
-
-    Returns: A list containing the ids of all models belonging to the given group.
-    """
-    return self.__db.clients(groups=groups)
-
-  def model_ids(self, groups=None, protocol=None):
-    """Returns a set of models ids for the specific query by the user.
-
-    Keyword Parameters:
-
-    protocol
-      Protocol is ignored in this context, since its choice has no influence on models.
-
-    groups
-      The groups to which the subjects attached to the models belong ('dev', 'eval', 'world')
-
-    Returns: A list containing the ids of all models belonging to the given group.
-    """
-    return [client.id for client in self.__db.clients(groups=groups)]
-
-  def clients(self, protocol=None, groups=None):
+  def clients(self, groups=None, protocol=None):
     """Returns a list of Clients for the specific query by the user.
        If no parameters are specified - return all clients.
 
@@ -120,126 +93,91 @@ class Database(bob.db.verification.utils.Database):
 
     Returns: A list containing the ids of all models belonging to the given group.
     """
+    # if protocol == '.':
+    #   protocol = None
+    # protocol = self.check_parameters_for_validity(protocol, "protocol", self.protocol_names(), None)
+    groups = self.check_parameters_for_validity(groups, "group", self.groups(), self.groups())
+    groups = self.convert_group_names_sql(groups)
 
-    return self.__db.clients(groups=groups)
+    retval = []
+    if groups:
+      q = self.__db.session.query(Client).filter(Client.set.in_(groups))
+      q = q.order_by(Client.id)
+      retval = list(q)
 
-  def has_client_id(self, id):
-    """Returns True if we have a client with a certain integer identifier"""
+    return retval
 
-    return self.__db.has_client_id(id)
+  def groups(self, protocol=None):
+    return self.convert_group_names_bio(self.__db.groups())
 
-  def client(self, id):
-    """Returns the Client object in the database given a certain id. Raises
-    an error if that does not exist."""
-
-    return self.__db.client(id)
-
-  def get_client_id_from_model_id(self, model_id, **kwargs):
-      """Returns the client_id attached to the given model_id
-
-      Keyword Parameters:
-
-      model_id
-          The model_id to consider
-
-      Returns: The client_id attached to the given model_id
-      """
-      return model_id
+  def model_ids(self, groups=None, protocol=None, **kwargs):
+    return [client.id for client in self.clients(groups=groups, protocol=protocol)]
 
   def annotations(self, file):
-    """Currently, there is no support for annotations in Replay database
+    """Will return the bounding box annotation of all frames of the video."""
+    # fn = 10  # 10th frame number
+    annots = file.__f.bbx(directory=self.original_directory)
+    # bob uses the (y, x) format
+    annotations = []
+    for i in range(annots.shape[0]):
+      topleft = (annots[i][2], annots[i][1])
+      bottomright = (annots[i][2] + annots[i][4], annots[i][1] + annots[i][3])
+      annotations.append({'topleft': topleft, 'bottomright': bottomright})
+    return annotations
+
+  def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
+    """This function returns lists of File objects, which fulfill the given restrictions.
+
+    Keyword parameters:
+
+    groups : str or [str]
+      The groups of which the clients should be returned.
+      Usually, groups are one or more elements of ('world', 'dev', 'eval')
+
+    protocol
+      The protocol for which the clients should be retrieved.
+      The protocol is dependent on your database.
+      If you do not have protocols defined, just ignore this field.
+
+    purposes : str or [str]
+      The purposes for which File objects should be retrieved.
+      Usually, purposes are one of ('enroll', 'probe').
+
+    model_ids : [various type]
+      The model ids for which the File objects should be retrieved.
+      What defines a 'model id' is dependent on the database.
+      In cases, where there is only one model per client, model ids and client ids are identical.
+      In cases, where there is one model per file, model ids and file ids are identical.
+      But, there might also be other cases.
     """
-    raise NotImplementedError
-
-  def objects(self, protocol=None, purposes=None, model_ids=None,
-              groups=None, device=None):
-    """Returns a set of Files for the specific query by the user.
-
-      Keyword Parameters:
-
-      protocol
-          Each valid protocol of the Replay database can have a '-licit' or '-spoof' appended to it.
-          If the '-licit' is appended, then the only real or genuine data of the protocol will be used.
-          If '-spoof' is appended, then attacks or spoofed data will be used as the probe set.
-          If nothing is appended, then 'licit' option is assumed by default.
-
-      purposes
-          The purposes can be either 'enroll', 'probe', or their tuple.
-          If 'None' is given (this is the default), it is
-          considered the same as a tuple with both possible values.
-
-      model_ids
-          Only retrieves the files for the provided list of model ids (claimed
-          client id).  If 'None' is given (this is the default), no filter over
-          the model_ids is performed.
-
-      groups
-          One of the groups ('devel', 'test', 'train') or a tuple with several of them.
-          If 'None' is given (this is the default), it is considered the same as a
-          tuple with all possible values.
-
-      device
-          The device to consider ('laptop', 'mobile'). In case of 'licit' protocol, device is recording device,
-          and for 'attack' protocol - device is the device of attack.
-
-      Returns: A set of Files with the specified properties.
-    """
-
-    # this conversion of the protocol with appended '-licit' or '-spoof' is a hack for verification experiments.
-    # To adapt spoofing databases to the verification experiments, we need to be able to split a given protocol
-    # into two parts: when data for licit (only real/genuine data is used) and data for spoof (attacks are used instead
-    # of real data) is used in the experiment. Hence, we use this trick with appending '-licit' or '-spoof' to the
-    # protocol name, so we can distinguish these two scenarios.
-    # By default, if nothing is appended, we assume licit protocol.
-    # The distinction between licit and spoof is expressed via purposes parameters
-    # this is the difference in terminology.
-
-    # lets check if we have an appendix to the protocol name
-    appendix = None
-    if protocol:
-      appendix = protocol.split('-')[-1]
-
-    # if protocol was empty or there was no correct appendix, we just assume the 'licit' option
-    if not (appendix == 'licit' or appendix == 'spoof'):
-      appendix = 'licit'
-    else:
-      # put back everything except the appendix into the protocol
-      protocol = '-'.join(protocol.split('-')[:-1])
-
-    # if protocol was empty, we set it to the grandtest, which is the whole data
-    if not protocol:
-      protocol = 'grandtest'
-
-    correct_purposes = purposes
-    # licit protocol is for real access data only
-    if appendix == 'licit':
-      # by default we assume all real data
-      if purposes is None:
-        correct_purposes = ('enroll', 'probe')
-
-    # spoof protocol uses real data for enrollment and spoofed data for probe
-    # so, probe set is the same as attack set
-    if appendix == 'spoof':
-      # by default we return all data (enroll:realdata + probe:attackdata)
-      if purposes is None:
-        correct_purposes = ('enroll', 'attack')
-      # otherwise replace 'probe' with 'attack'
-      elif isinstance(purposes, (tuple, list)):
-        correct_purposes = []
-        for purpose in purposes:
-          if purpose == 'probe':
-            correct_purposes += ['attack']
-          else:
-            correct_purposes += [purpose]
-      elif purposes == 'probe':
-        correct_purposes = ('attack',)
+    if protocol == '.':
+      protocol = None
+    protocol = self.check_parameter_for_validity(protocol, "protocol", self.protocol_names(), 'grandtest')
+    groups = self.check_parameters_for_validity(groups, "group", self.groups(), self.groups())
+    purposes = self.check_parameters_for_validity(purposes, "purpose", ('enroll', 'probe'), ('enroll', 'probe'))
+    purposes = list(purposes)
+    groups = self.convert_group_names_sql(groups)
 
     # now, query the actual Replay database
-    if 'attack' in correct_purposes:
-      objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
-                                  clients=model_ids, gender=gender, attackdevices=device)
+    if protocol == 'licit':
+      protocol = None
+      if 'probe' in purposes:
+        purposes.remove('probe')
+        purposes.append('real')
     else:
-      objects = self.__db.objects(protocol=protocol, groups=matched_groups, cls=correct_purposes,
-                                  clients=model_ids, gender=gender, devices=device)
+      if 'probe' in purposes:
+        purposes.remove('probe')
+        purposes.append('attack')
+
+    objects = self.__db.objects(groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs)
+
     # make sure to return verification.utils representation of a file, not the database one
-    return [File(f) for f in objects]
+    retval = []
+    for f in objects:
+      if f.is_real():
+        retval.append(File(f))
+      else:
+        temp = File(f)
+        temp.client_id = 'spoof'
+        retval.append(temp)
+    return retval
