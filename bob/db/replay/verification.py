@@ -158,7 +158,8 @@ class Database(BaseDatabase):
     purposes = list(purposes)
     groups = self.convert_group_names_sql(groups)
 
-    # now, query the actual Replay database
+    # protocol licit is not defined in the low level API
+    # so do a hack here.
     if protocol == 'licit':
       protocol = None
       if 'probe' in purposes:
@@ -169,15 +170,22 @@ class Database(BaseDatabase):
         purposes.remove('probe')
         purposes.append('attack')
 
+    # now, query the actual Replay database
     objects = self.__db.objects(groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs)
 
     # make sure to return verification.utils representation of a file, not the database one
+    # also make sure you replace client ids with spoof/metatdata1/metadata2/...
     retval = []
     for f in objects:
       if f.is_real():
         retval.append(File(f))
       else:
         temp = File(f)
-        temp.client_id = 'spoof'
+        attack = f.get_attack()
+        temp.client_id = 'spoof/{}/{}/{}/{}'.format(
+           attack.attack_device,
+           attack.attack_support,
+           attack.sample_device,
+           attack.sample_type)
         retval.append(temp)
     return retval
