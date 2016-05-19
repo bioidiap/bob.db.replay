@@ -15,7 +15,7 @@ from bob.db.verification.utils import File as BaseFile
 from bob.db.verification.utils import Database as BaseDatabase
 
 
-class File(BaseFile):
+class File(BaseFile, ReplayFile):
 
   def __init__(self, f):
     """
@@ -23,19 +23,18 @@ class File(BaseFile):
     Replay database.
     """
     BaseFile.__init__(self, client_id=f.client_id, path=f.path, file_id=f.id)
-
     self.__f = f
 
-  def load(self, directory=None, extension='.hdf5'):
-    return self.__f.load(directory=directory, extension=extension)
+  # def load(self, directory=None, extension='.hdf5'):
+  #   return self.__f.load(directory=directory, extension=extension)
 
-  load.__doc__ = ReplayFile.load.__doc__
+  # load.__doc__ = ReplayFile.load.__doc__
 
-  def get_client_id(self):
-    """
-    Get ID of the client that this file belongs to.
-    """
-    return self.__f.client_id
+  # def get_client_id(self):
+  #   """
+  #   Get ID of the client that this file belongs to.
+  #   """
+  #   return self.__f.client_id
 
 
 class Database(BaseDatabase):
@@ -79,7 +78,7 @@ class Database(BaseDatabase):
     """Returns all registered protocol names"""
     return [p.name for p in self.protocols()]
 
-  def clients(self, groups=None, protocol=None):
+  def clients(self, groups=None, protocol=None, **kwargs):
     """Returns a list of Clients for the specific query by the user.
        If no parameters are specified - return all clients.
 
@@ -111,18 +110,18 @@ class Database(BaseDatabase):
     return self.convert_group_names_bio(self.__db.groups())
 
   def model_ids(self, groups=None, protocol=None, **kwargs):
-    return [client.id for client in self.clients(groups=groups, protocol=protocol)]
+    return [client.id for client in self.clients(groups=groups, protocol=protocol, **kwargs)]
 
   def annotations(self, file):
     """Will return the bounding box annotation of all frames of the video."""
     # fn = 10  # 10th frame number
-    annots = file.__f.bbx(directory=self.original_directory)
+    annots = file.bbx(directory=self.original_directory)
     # bob uses the (y, x) format
-    annotations = []
+    annotations = dict()
     for i in range(annots.shape[0]):
       topleft = (annots[i][2], annots[i][1])
       bottomright = (annots[i][2] + annots[i][4], annots[i][1] + annots[i][3])
-      annotations.append({'topleft': topleft, 'bottomright': bottomright})
+      annotations[str(i)] = {'topleft': topleft, 'bottomright': bottomright}
     return annotations
 
   def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
@@ -161,14 +160,30 @@ class Database(BaseDatabase):
     # protocol licit is not defined in the low level API
     # so do a hack here.
     if protocol == 'licit':
+      # for licit we return the grandtest protocol
       protocol = None
+      # The low-level API has only "attack", "real", "enroll" and "probe"
+      # should translate to "real" or "attack" depending on the protocol.
+      # enroll does not to change.
       if 'probe' in purposes:
         purposes.remove('probe')
         purposes.append('real')
+        if len(purposes) == 1:
+          # making the model_ids to None will return all clients which make
+          # the impostor data also available.
+          model_ids = None
+        elif model_ids:
+          raise NotImplementedError(
+             'Currently returning both enroll and probe for specific '
+             'client(s) in the licit protocol is not supported. '
+             'Please specify one purpose only.')
     else:
+      # you need to replace probe with attack and real for the spoof protocols.
+      # I am adding the real here also to create positives scores also.
       if 'probe' in purposes:
         purposes.remove('probe')
         purposes.append('attack')
+        purposes.append('real')
 
     # now, query the actual Replay database
     objects = self.__db.objects(groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs)
