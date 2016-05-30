@@ -151,7 +151,9 @@ class Database(BaseDatabase):
     """
     if protocol == '.':
       protocol = None
-    protocol = self.check_parameter_for_validity(protocol, "protocol", self.protocol_names(), 'grandtest')
+    valid_protocols = [x + '-licit' for x in self.protocol_names()]
+    valid_protocols += [x + '-spoof' for x in self.protocol_names()]
+    protocol = self.check_parameter_for_validity(protocol, "protocol", valid_protocols, 'grandtest')
     groups = self.check_parameters_for_validity(groups, "group", self.groups(), self.groups())
     purposes = self.check_parameters_for_validity(purposes, "purpose", ('enroll', 'probe'), ('enroll', 'probe'))
     purposes = list(purposes)
@@ -159,9 +161,9 @@ class Database(BaseDatabase):
 
     # protocol licit is not defined in the low level API
     # so do a hack here.
-    if protocol == 'licit':
+    if '-licit' in protocol:
       # for licit we return the grandtest protocol
-      protocol = None
+      protocol = protocol.replace('-licit', '')
       # The low-level API has only "attack", "real", "enroll" and "probe"
       # should translate to "real" or "attack" depending on the protocol.
       # enroll does not to change.
@@ -177,13 +179,16 @@ class Database(BaseDatabase):
              'Currently returning both enroll and probe for specific '
              'client(s) in the licit protocol is not supported. '
              'Please specify one purpose only.')
-    else:
+    elif '-spoof' in protocol:
+      protocol = protocol.replace('-spoof', '')
       # you need to replace probe with attack and real for the spoof protocols.
       # I am adding the real here also to create positives scores also.
       if 'probe' in purposes:
         purposes.remove('probe')
         purposes.append('attack')
         purposes.append('real')
+    else:
+      raise ValueError('Valid protocols are: ' + ' '.join(valid_protocols))
 
     # now, query the actual Replay database
     objects = self.__db.objects(groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs)
@@ -196,11 +201,6 @@ class Database(BaseDatabase):
         retval.append(File(f))
       else:
         temp = File(f)
-        attack = f.get_attack()
-        temp.client_id = 'spoof/{}/{}/{}/{}'.format(
-           attack.attack_device,
-           attack.attack_support,
-           attack.sample_device,
-           attack.sample_type)
+        temp.client_id = 'attack'
         retval.append(temp)
     return retval
