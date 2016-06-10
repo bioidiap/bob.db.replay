@@ -9,7 +9,7 @@ replay attack database in the most obvious ways.
 
 import os
 import logging
-from bob.db.base import utils
+from bob.db.base import utils, Database
 from .models import *
 from .driver import Interface
 
@@ -17,7 +17,7 @@ INFO = Interface()
 
 SQLITE_FILE = INFO.files()[0]
 
-class Database(object):
+class Database(Database):
   """The dataset class opens and maintains a connection opened to the Database.
 
   It provides many different ways to probe for the characteristics of the data
@@ -27,6 +27,7 @@ class Database(object):
   def __init__(self):
     # opens a session to the database - keep it open until the end
     self.connect()
+    super(Database, self).__init__()
 
   def __del__(self):
     """Releases the opened file descriptor"""
