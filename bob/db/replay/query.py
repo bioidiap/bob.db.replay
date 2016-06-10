@@ -8,7 +8,6 @@ replay attack database in the most obvious ways.
 """
 
 import os
-import logging
 from bob.db.base import utils, Database
 from .models import *
 from .driver import Interface
@@ -16,6 +15,7 @@ from .driver import Interface
 INFO = Interface()
 
 SQLITE_FILE = INFO.files()[0]
+
 
 class Database(Database):
   """The dataset class opens and maintains a connection opened to the Database.
@@ -63,8 +63,8 @@ class Database(Database):
       raise RuntimeError("Database '%s' cannot be found at expected location '%s'. Create it and then try re-connecting using Database.connect()" % (INFO.name(), SQLITE_FILE))
 
   def objects(self, support=Attack.attack_support_choices,
-      protocol='grandtest', groups=Client.set_choices, cls=('attack', 'real'),
-      light=File.light_choices, clients=None):
+              protocol='grandtest', groups=Client.set_choices, cls=('attack', 'real'),
+              light=File.light_choices, clients=None):
     """Returns a list of unique :py:class:`.File` objects for the specific
     query by the user.
 
@@ -107,7 +107,8 @@ class Database(Database):
 
     def check_validity(l, obj, valid, default):
       """Checks validity of user input data against a set of valid values"""
-      if not l: return default
+      if not l:
+        return default
       elif not isinstance(l, (tuple, list)):
         return check_validity((l,), obj, valid, default)
       for k in l:
@@ -128,7 +129,8 @@ class Database(Database):
     cls = check_validity(cls, "class", VALID_CLASSES, ('real', 'attack'))
 
     # check protocol validity
-    if not protocol: protocol = 'grandtest' #default
+    if not protocol:
+      protocol = 'grandtest'  # default
     VALID_PROTOCOLS = [k.name for k in self.protocols()]
     protocol = check_validity(protocol, "protocol", VALID_PROTOCOLS, ('grandtest',))
 
@@ -143,23 +145,28 @@ class Database(Database):
     # now query the database
     retval = []
 
-    from sqlalchemy.sql.expression import or_
     # real-accesses are simpler to query
     if 'enroll' in cls:
       q = self.session.query(File).join(RealAccess).join(Client)
-      if groups: q = q.filter(Client.set.in_(groups))
-      if clients: q = q.filter(Client.id.in_(clients))
-      if light: q = q.filter(File.light.in_(light))
-      q = q.filter(RealAccess.purpose=='enroll')
+      if groups:
+        q = q.filter(Client.set.in_(groups))
+      if clients:
+        q = q.filter(Client.id.in_(clients))
+      if light:
+        q = q.filter(File.light.in_(light))
+      q = q.filter(RealAccess.purpose == 'enroll')
       q = q.order_by(Client.id)
       retval += list(q)
 
     # real-accesses are simpler to query
     if 'real' in cls:
       q = self.session.query(File).join(RealAccess).join((Protocol, RealAccess.protocols)).join(Client)
-      if groups: q = q.filter(Client.set.in_(groups))
-      if clients: q = q.filter(Client.id.in_(clients))
-      if light: q = q.filter(File.light.in_(light))
+      if groups:
+        q = q.filter(Client.set.in_(groups))
+      if clients:
+        q = q.filter(Client.id.in_(clients))
+      if light:
+        q = q.filter(File.light.in_(light))
       q = q.filter(Protocol.name.in_(protocol))
       q = q.order_by(Client.id)
       retval += list(q)
@@ -167,10 +174,14 @@ class Database(Database):
     # attacks will have to be filtered a little bit more
     if 'attack' in cls:
       q = self.session.query(File).join(Attack).join((Protocol, Attack.protocols)).join(Client)
-      if groups: q = q.filter(Client.set.in_(groups))
-      if clients: q = q.filter(Client.id.in_(clients))
-      if support: q = q.filter(Attack.attack_support.in_(support))
-      if light: q = q.filter(File.light.in_(light))
+      if groups:
+        q = q.filter(Client.set.in_(groups))
+      if clients:
+        q = q.filter(Client.id.in_(clients))
+      if support:
+        q = q.filter(Attack.attack_support.in_(support))
+      if light:
+        q = q.filter(File.light.in_(light))
       q = q.filter(Protocol.name.in_(protocol))
       q = q.order_by(Client.id)
       retval += list(q)
@@ -218,7 +229,7 @@ class Database(Database):
     """Returns True if we have a client with a certain integer identifier"""
 
     self.assert_validity()
-    return self.session.query(Client).filter(Client.id==id).count() != 0
+    return self.session.query(Client).filter(Client.id == id).count() != 0
 
   def protocols(self):
     """Returns all protocol objects.
@@ -231,14 +242,14 @@ class Database(Database):
     """Tells if a certain protocol is available"""
 
     self.assert_validity()
-    return self.session.query(Protocol).filter(Protocol.name==name).count() != 0
+    return self.session.query(Protocol).filter(Protocol.name == name).count() != 0
 
   def protocol(self, name):
     """Returns the protocol object in the database given a certain name. Raises
     an error if that does not exist."""
 
     self.assert_validity()
-    return self.session.query(Protocol).filter(Protocol.name==name).one()
+    return self.session.query(Protocol).filter(Protocol.name == name).one()
 
   def groups(self):
     """Returns the names of all registered groups"""
@@ -357,7 +368,7 @@ class Database(Database):
     utils.makedirs_safe(fulldir)
 
     from bob.io.base import save
-    
+
     save(obj, fullpath)
 
   def save(self, data, directory, extension):
