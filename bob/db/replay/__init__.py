@@ -8,7 +8,6 @@
 
 from .query import Database
 from .models import Client, File, Protocol, RealAccess, Attack
-from . import spoofing
 
 def get_config():
   """Returns a string containing the configuration information.
