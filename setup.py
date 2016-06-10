@@ -39,11 +39,6 @@ setup(
       'bob.db': [
         'replay = bob.db.replay.driver:Interface',
       ],
-
-      # antispoofing database declaration
-      'antispoofing.utils.db': [
-        'replay = bob.db.replay.spoofing:Database',
-      ],
     },
 
     classifiers = [
