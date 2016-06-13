@@ -203,7 +203,7 @@ def add_command(subparsers):
   parser.add_argument('-v', '--verbose', action='count', default=0,
       help="Do SQL operations in a verbose way")
   parser.add_argument('-D', '--protodir', action='store',
-      default='/idiap/group/replay/database/protocols/replayattack-database/protocols',
+      default='/idiap/group/biometric/databases/replay/protocols/replayattack-database/protocols',  #'/idiap/group/replay/database/protocols/replayattack-database/protocols',
       metavar='DIR',
       help="Change the relative path to the directory containing the protocol definitions for replay attacks (defaults to %(default)s)")
 

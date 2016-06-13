@@ -15,6 +15,8 @@ from sqlalchemy.orm import backref
 from sqlalchemy.ext.declarative import declarative_base
 import numpy
 import bob
+import bob.io.video
+
 
 Base = declarative_base()
 
@@ -165,7 +167,7 @@ class File(Base):
       raise RuntimeError("%s is not an attack" % self)
     return self.attack[0]
 
-  def load(self, directory=None, extension='.hdf5'):
+  def load(self, directory=None, extension=None):
     """Loads the data at the specified location and using the given extension.
 
     Keyword parameters:
@@ -181,7 +183,19 @@ class File(Base):
       [optional] The extension of the filename - this will control the type of
       output and the codec for saving the input blob.
     """
-    return bob.io.base.load(self.make_path(directory, extension))
+    if extension is None:
+        extension = '.mov'
+    print 'replaydb::models.py()::load::extension', extension
+    vfn = self.make_path(directory, extension)
+    print 'file to load:', vfn
+
+    if extension == '.mov':
+        video = bob.io.video.reader(self.make_path(directory, extension))
+        vin = video.load()
+    else:
+        vin =  bob.io.base.load(self.make_path(directory, extension))
+
+    return vin #bob.io.base.load(self.make_path(directory, extension))
 
   def save(self, data, directory=None, extension='.hdf5'):
     """Saves the input data at the specified location and using the given
