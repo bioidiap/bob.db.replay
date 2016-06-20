@@ -185,9 +185,7 @@ class File(Base):
     """
     if extension is None:
         extension = '.mov'
-    print 'replaydb::models.py()::load::extension', extension
     vfn = self.make_path(directory, extension)
-    print 'file to load:', vfn
 
     if extension == '.mov':
         video = bob.io.video.reader(self.make_path(directory, extension))
