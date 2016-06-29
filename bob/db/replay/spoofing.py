@@ -35,7 +35,19 @@ class File(antispoofing.utils.db.File):
 
 
   def load(self, directory=None, extension='.hdf5'):
-    return self.__f.load(directory=directory, extension=extension)
+    if extension is None:
+      extension = '.mov'
+      vfn = self.make_path(directory, extension)
+
+      if extension == '.mov':
+        video = bob.io.video.reader(self.make_path(directory, extension))
+        vin = video.load()
+      else:
+        vin =  bob.io.base.load(self.make_path(directory, extension))
+
+    return vin
+
+   # return self.__f.load(directory=directory, extension=extension)
   load.__doc__ = antispoofing.utils.db.File.bbx.__doc__
 
   def save(self, data, directory=None, extension='.hdf5'):
