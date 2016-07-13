@@ -44,6 +44,11 @@ setup(
       'antispoofing.utils.db': [
         'replay = bob.db.replay.spoofing:Database',
       ],
+
+      # verification database declaration
+      'bob.db.verification.utils': [
+        'replay = bob.db.replay.verification:Database',
+      ],
     },
 
     classifiers = [
