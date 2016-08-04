@@ -6,7 +6,6 @@
 """Table models and functionality for the Replay Attack DB.
 """
 
-import sqlalchemy
 import os
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from bob.db.base.sqlalchemy_migration import Enum, relationship
@@ -19,6 +18,7 @@ import bob.io.video
 
 
 Base = declarative_base()
+
 
 class Client(Base):
   """Database clients, marked by an integer identifier and the set they belong
@@ -42,6 +42,7 @@ class Client(Base):
   def __repr__(self):
     return "Client('%s', '%s')" % (self.id, self.set)
 
+
 class File(Base):
   """Generic file container"""
 
@@ -53,7 +54,7 @@ class File(Base):
   id = Column(Integer, primary_key=True)
   """Key identifier for files"""
 
-  client_id = Column(Integer, ForeignKey('client.id')) # for SQL
+  client_id = Column(Integer, ForeignKey('client.id'))  # for SQL
   """The client identifier to which this file is bound to"""
 
   path = Column(String(100), unique=True)
@@ -90,8 +91,10 @@ class File(Base):
     Returns a string containing the newly generated file path.
     """
 
-    if not directory: directory = ''
-    if not extension: extension = ''
+    if not directory:
+      directory = ''
+    if not extension:
+      extension = ''
 
     return str(os.path.join(directory, self.path + extension))
 
@@ -119,7 +122,8 @@ class File(Base):
     Returns a string containing the face file path.
     """
 
-    if not directory: directory = ''
+    if not directory:
+      directory = ''
     directory = os.path.join(directory, 'face-locations')
     return self.make_path(directory, '.face')
 
@@ -219,15 +223,16 @@ class File(Base):
 
 # Intermediate mapping from RealAccess's to Protocol's
 realaccesses_protocols = Table('realaccesses_protocols', Base.metadata,
-    Column('realaccess_id', Integer, ForeignKey('realaccess.id')),
-    Column('protocol_id', Integer, ForeignKey('protocol.id')),
-    )
+                               Column('realaccess_id', Integer, ForeignKey('realaccess.id')),
+                               Column('protocol_id', Integer, ForeignKey('protocol.id')),
+                               )
 
 # Intermediate mapping from Attack's to Protocol's
 attacks_protocols = Table('attacks_protocols', Base.metadata,
-    Column('attack_id', Integer, ForeignKey('attack.id')),
-    Column('protocol_id', Integer, ForeignKey('protocol.id')),
-    )
+                          Column('attack_id', Integer, ForeignKey('attack.id')),
+                          Column('protocol_id', Integer, ForeignKey('protocol.id')),
+                          )
+
 
 class Protocol(Base):
   """Replay attack protocol"""
@@ -246,6 +251,7 @@ class Protocol(Base):
   def __repr__(self):
     return "Protocol('%s')" % (self.name,)
 
+
 class RealAccess(Base):
   """Defines Real-Accesses (licit attempts to authenticate)"""
 
@@ -257,7 +263,7 @@ class RealAccess(Base):
   id = Column(Integer, primary_key=True)
   """Unique identifier for this real-access object"""
 
-  file_id = Column(Integer, ForeignKey('file.id')) # for SQL
+  file_id = Column(Integer, ForeignKey('file.id'))  # for SQL
   """The file identifier the current real-access is bound to"""
 
   purpose = Column(Enum(*purpose_choices))
@@ -271,7 +277,7 @@ class RealAccess(Base):
   """A direct link to the :py:class:`.File` object this real-access belongs to"""
 
   protocols = relationship("Protocol", secondary=realaccesses_protocols,
-      backref='realaccesses')
+                           backref='realaccesses')
   """A direct link to the protocols this file is linked to"""
 
   def __init__(self, file, purpose, take):
@@ -281,6 +287,7 @@ class RealAccess(Base):
 
   def __repr__(self):
     return "RealAccess('%s')" % (self.file.path)
+
 
 class Attack(Base):
   """Defines Spoofing Attacks (illicit attempts to authenticate)"""
@@ -302,7 +309,7 @@ class Attack(Base):
   id = Column(Integer, primary_key=True)
   """Unique identifier for this attack"""
 
-  file_id = Column(Integer, ForeignKey('file.id')) # for SQL
+  file_id = Column(Integer, ForeignKey('file.id'))  # for SQL
   """The file identifier this attack is linked to"""
 
   attack_support = Column(Enum(*attack_support_choices))
@@ -322,7 +329,7 @@ class Attack(Base):
   """A direct link to the :py:class:`.File` object bound to this attack"""
 
   protocols = relationship("Protocol", secondary=attacks_protocols,
-      backref='attacks')
+                           backref='attacks')
   """A direct link to the protocols this file is linked to"""
 
   def __init__(self, file, attack_support, attack_device, sample_type, sample_device):

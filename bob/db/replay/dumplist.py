@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Andre Anjos <andre.dos.anjos@gmail.com>
-# Thu 12 May 14:02:28 2011 
+# Thu 12 May 14:02:28 2011
 
 """Dumps lists of files.
 """
 
-import os
 import sys
 
 # Driver API
 # ==========
+
 
 def dumplist(args):
   """Dumps lists of files based on your criteria"""
@@ -19,13 +19,13 @@ def dumplist(args):
   db = Database()
 
   r = db.objects(
-      protocol=args.protocol, 
-      support=args.support, 
-      groups=args.group, 
+      protocol=args.protocol,
+      support=args.support,
+      groups=args.group,
       cls=args.cls,
       light=args.light,
       clients=args.client,
-      )
+  )
 
   output = sys.stdout
   if args.selftest:
@@ -36,6 +36,7 @@ def dumplist(args):
     output.write('%s\n' % (f.make_path(args.directory, args.extension),))
 
   return 0
+
 
 def add_command(subparsers):
   """Add specific subcommands that the action "dumplist" can use"""
@@ -49,7 +50,7 @@ def add_command(subparsers):
   db = Database()
 
   if not db.is_valid():
-    protocols = ('waiting','for','database','creation')
+    protocols = ('waiting', 'for', 'database', 'creation')
     clients = tuple()
   else:
     protocols = [k.name for k in db.protocols()]
@@ -64,6 +65,6 @@ def add_command(subparsers):
   parser.add_argument('-l', '--light', dest="light", default='', help="if given, this value will limit the output files to those shot under a given lighting. (defaults to '%(default)s')", choices=db.lights())
   parser.add_argument('-C', '--client', dest="client", default=None, type=int, help="if given, limits the dump to a particular client (defaults to '%(default)s')", choices=clients)
   parser.add_argument('--self-test', dest="selftest", default=False,
-      action='store_true', help=SUPPRESS)
+                      action='store_true', help=SUPPRESS)
 
-  parser.set_defaults(func=dumplist) #action
+  parser.set_defaults(func=dumplist)  # action

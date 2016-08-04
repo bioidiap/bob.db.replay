@@ -7,11 +7,7 @@
 ==============
 
 
-This database implements the face anti-spoofing database interface defined in :ref:`antispoofing.utils <antispoofing.utils>`.
-
-.. todo::
-   Adapt the link above when there is a better one inside the :ref:`antispoofing.utils <antispoofing.utils>` package.
-
+This database implements the low-level database interface defined in :ref:`bob.db.base <bob.db.base>`.
 
 .. todo::
    Write users guide.

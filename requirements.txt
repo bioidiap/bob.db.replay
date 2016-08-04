@@ -2,5 +2,3 @@ setuptools
 six
 sqlalchemy
 bob.db.base
-antispoofing.utils
-bob.db.verification.utils

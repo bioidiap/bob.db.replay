@@ -12,6 +12,7 @@ import sys
 # Driver API
 # ==========
 
+
 def checkfiles(args):
   """Checks existence files based on your criteria"""
 
@@ -19,13 +20,13 @@ def checkfiles(args):
   db = Database()
 
   r = db.objects(
-      protocol=args.protocol, 
-      support=args.support, 
+      protocol=args.protocol,
+      support=args.support,
       groups=args.group,
       cls=args.cls,
       light=args.light,
       clients=args.client,
-      )
+  )
 
   # go through all files, check if they are available on the filesystem
   good = []
@@ -33,7 +34,7 @@ def checkfiles(args):
   for f in r:
     if os.path.exists(f.make_path(args.directory, args.extension)):
       good.append(f)
-    else: 
+    else:
       bad.append(f)
 
   # report
@@ -45,10 +46,11 @@ def checkfiles(args):
   if bad:
     for f in bad:
       output.write('Cannot find file "%s"\n' % (f.make_path(args.directory, args.extension),))
-    output.write('%d files (out of %d) were not found at "%s"\n' % \
-        (len(bad), len(r), args.directory))
+    output.write('%d files (out of %d) were not found at "%s"\n' %
+                 (len(bad), len(r), args.directory))
 
   return 0
+
 
 def add_command(subparsers):
   """Add specific subcommands that the action "checkfiles" can use"""
@@ -62,7 +64,7 @@ def add_command(subparsers):
   db = Database()
 
   if not db.is_valid():
-    protocols = ('waiting','for','database','creation')
+    protocols = ('waiting', 'for', 'database', 'creation')
     clients = tuple()
   else:
     protocols = [k.name for k in db.protocols()]
@@ -77,6 +79,6 @@ def add_command(subparsers):
   parser.add_argument('-l', '--light', dest="light", default='', help="if given, this value will limit the check to those files shot under a given lighting. (defaults to '%(default)s')", choices=db.lights())
   parser.add_argument('-C', '--client', dest="client", default=None, type=int, help="if given, limits the dump to a particular client (defaults to '%(default)s')", choices=clients)
   parser.add_argument('--self-test', dest="selftest", default=False,
-      action='store_true', help=SUPPRESS)
+                      action='store_true', help=SUPPRESS)
 
-  parser.set_defaults(func=checkfiles) #action
+  parser.set_defaults(func=checkfiles)  # action
