@@ -79,6 +79,7 @@ variables:
   script:
     - cd ${CONDA_PREFIX}
     - python -c "from ${CI_PROJECT_NAME} import get_config; print(get_config())"
+    - if [ -x ${CONDA_PREFIX}/bin/bob_db_manage.py ]; then ${CONDA_PREFIX}/bin/bob_db_manage.py all download -v; fi
     - coverage run --source=${CI_PROJECT_NAME} ./bin/nosetests -sv ${CI_PROJECT_NAME}
     - coverage report
     - sphinx-build -b doctest ../doc ../sphinx
