@@ -2,3 +2,4 @@ setuptools
 six
 sqlalchemy
 bob.db.base
+bob.io.video
