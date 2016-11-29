@@ -267,4 +267,3 @@ def member_function_test(app, what, name, obj, skip, options):
 
 def setup(app):
   app.connect('autodoc-skip-member', member_function_test)
-
