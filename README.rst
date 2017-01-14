@@ -1,17 +1,17 @@
 .. vim: set fileencoding=utf-8 :
 .. Tue 16 Aug 11:13:39 CEST 2016
 
-.. image:: http://img.shields.io/badge/docs-stable-yellow.png
+.. image:: http://img.shields.io/badge/docs-stable-yellow.svg
    :target: http://pythonhosted.org/bob.db.replay/index.html
-.. image:: http://img.shields.io/badge/docs-latest-orange.png
+.. image:: http://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.db.replay/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.db.replay/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.db.replay/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.db.replay
-.. image:: http://img.shields.io/pypi/v/bob.db.replay.png
+.. image:: http://img.shields.io/pypi/v/bob.db.replay.svg
    :target: https://pypi.python.org/pypi/bob.db.replay
-.. image:: http://img.shields.io/pypi/dm/bob.db.replay.png
+.. image:: http://img.shields.io/pypi/dm/bob.db.replay.svg
    :target: https://pypi.python.org/pypi/bob.db.replay
 
 
@@ -46,6 +46,6 @@ development `mailing list`_.
 
 .. Place your references here:
 .. _bob: https://www.idiap.ch/software/bob
-.. _installation: https://gitlab.idiap.ch/bob/bob/wikis/Installation
+.. _installation: https://www.idiap.ch/software/bob/install
 .. _mailing list: https://groups.google.com/forum/?fromgroups#!forum/bob-devel
 .. _replay attack: http://www.idiap.ch/dataset/replayattack
