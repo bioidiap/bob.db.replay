@@ -24,10 +24,10 @@ class Database(Database):
   and for the data itself inside the database.
   """
 
-  def __init__(self):
+  def __init__(self, original_directory=None, original_extension=None):
     # opens a session to the database - keep it open until the end
     self.connect()
-    super(Database, self).__init__()
+    super(Database, self).__init__(original_directory, original_extension)
 
   def __del__(self):
     """Releases the opened file descriptor"""
