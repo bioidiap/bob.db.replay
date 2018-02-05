@@ -18,3 +18,4 @@ build
 *.egg
 src/
 db.sql3
+record.txt
