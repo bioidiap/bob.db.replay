@@ -9,6 +9,7 @@
 import os
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from bob.db.base.sqlalchemy_migration import Enum, relationship
+import bob.db.base
 import bob.db.base.utils
 from sqlalchemy.orm import backref
 from sqlalchemy.ext.declarative import declarative_base
@@ -43,7 +44,7 @@ class Client(Base):
     return "Client('%s', '%s')" % (self.id, self.set)
 
 
-class File(Base):
+class File(Base, bob.db.base.File):
   """Generic file container"""
 
   __tablename__ = 'file'
@@ -71,32 +72,10 @@ class File(Base):
     self.client = client
     self.path = path
     self.light = light
+    bob.db.base.File.__init__(path)
 
   def __repr__(self):
     return "File('%s')" % self.path
-
-  def make_path(self, directory=None, extension=None):
-    """Wraps the current path so that a complete path is formed
-
-    Keyword parameters:
-
-    directory
-      An optional directory name that will be prefixed to the returned result.
-
-    extension
-      An optional extension that will be suffixed to the returned filename. The
-      extension normally includes the leading ``.`` character as in ``.jpg`` or
-      ``.hdf5``.
-
-    Returns a string containing the newly generated file path.
-    """
-
-    if not directory:
-      directory = ''
-    if not extension:
-      extension = ''
-
-    return str(os.path.join(directory, self.path + extension))
 
   def videofile(self, directory=None):
     """Returns the path to the database video file for this object
@@ -199,27 +178,6 @@ class File(Base):
 
     return vin #bob.io.base.load(self.make_path(directory, extension))
 
-  def save(self, data, directory=None, extension='.hdf5'):
-    """Saves the input data at the specified location and using the given
-    extension.
-
-    Keyword parameters:
-
-    data
-      The data blob to be saved (normally a :py:class:`numpy.ndarray`).
-
-    directory
-      [optional] If not empty or None, this directory is prefixed to the final
-      file destination
-
-    extension
-      [optional] The extension of the filename - this will control the type of
-      output and the codec for saving the input blob.
-    """
-
-    path = self.make_path(directory, extension)
-    bob.io.base.create_directories_safe(os.path.dirname(path))
-    bob.io.base.save(data, path)
 
 # Intermediate mapping from RealAccess's to Protocol's
 realaccesses_protocols = Table('realaccesses_protocols', Base.metadata,
