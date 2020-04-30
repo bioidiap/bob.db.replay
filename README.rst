@@ -1,7 +1,7 @@
 .. vim: set fileencoding=utf-8 :
 .. Tue 16 Aug 11:13:39 CEST 2016
 
-.. image:: https://img.shields.io/badge/docs-available-orage.svg
+.. image:: https://img.shields.io/badge/docs-available-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.db.replay/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.db.replay/badges/master/pipeline.svg
    :target: https://gitlab.idiap.ch/bob/bob.db.replay/commits/master
